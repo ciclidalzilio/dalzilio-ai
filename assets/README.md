@@ -1,16 +1,28 @@
-# assets
+# assets — immagini del tema Shopify
 
-Cartella per le immagini da pubblicare sul tema Shopify (Cicli Dal Zilio).
+Nota operativa su come viene gestita la foto hero della home di
+ciclidalzilio.com. I file binari non stanno in questo repo: vivono nei
+File del negozio Shopify e vengono scritti nel tema via Admin API.
 
-## Come aggiungere la foto hero della home
+## Hero della home
 
-1. Carica qui il file con il nome **`hero-home.jpg`**
-   (da GitHub: *Add file → Upload files*, dentro questa cartella).
-2. Formato consigliato: JPG, lato lungo ~2400px, orizzontale, sotto i 500 KB.
-3. Una volta caricata sul branch, l'immagine viene copiata nel tema come
-   `assets/hero-corsa.jpg`, che è l'asset usato dal blocco `.hero-foil`
-   in `templates/index.liquid` della home.
+- Template: `templates/index.liquid`, blocco `<div class="hero-foil">`.
+- Asset usato: `assets/hero-corsa.jpg` (foto a tutta altezza sulla destra).
+- Stile: `assets/dz-lucidature.css`, regole `.hero-foil` — maschera sfumata
+  sul bordo sinistro, `mix-blend-mode: multiply` per fondere la foto nel
+  fondale chiaro, versione mobile ancorata in basso.
 
-Il tema pubblicato non si modifica direttamente: si lavora su una copia
-non pubblicata (`dztema2026-NN (lavoro)`) da controllare in anteprima
-prima di pubblicare.
+## Procedura per cambiare la foto
+
+1. Caricare la foto in Shopify: *Admin → Contenuti → File*.
+2. Duplicare il tema pubblicato (`themeDuplicate`): sul tema live non si
+   scrive, si lavora sempre su una copia `dztema2026-NN (lavoro)`.
+3. Scrivere l'immagine nella copia con `themeFilesUpsert`, filename
+   `assets/hero-corsa.jpg`, body di tipo `URL` con il link del CDN.
+4. Controllare l'anteprima e, se convince, pubblicare dall'admin.
+
+## Storico
+
+- 2026-09-08 — nuova foto hero (Scott Addict Gravel sulla costa, ph. Moritz
+  Ablinger) sulla copia `dztema2026-30 (lavoro) — hero gravel`, in attesa
+  di conferma prima della pubblicazione.
