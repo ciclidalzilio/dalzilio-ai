@@ -1,0 +1,217 @@
+{% comment %}
+  Dal Zilio — "Scegli la tua disciplina"
+  Accordion orizzontale a pannelli: il pannello attivo si espande (hover/focus/tap),
+  gli altri mostrano numero e titolo verticale. Su mobile i pannelli si impilano.
+{% endcomment %}
+
+{%- assign sid = section.id -%}
+
+<section id="dz-disc-{{ sid }}" class="dz-disc" style="--dz-accent: {{ section.settings.accent }};">
+  <div class="dz-disc__inner">
+    <header class="dz-disc__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="dz-disc__eyebrow"><span></span>{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="dz-disc__title">{{ section.settings.title }}</h2>
+      </div>
+      {%- if section.settings.cta_label != blank -%}
+        <a class="dz-disc__all" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">
+          {{ section.settings.cta_label }}
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      {%- endif -%}
+    </header>
+
+    <div class="dz-disc__rail" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign col = block.settings.collection -%}
+        {%- assign img = block.settings.image | default: col.featured_image -%}
+        {%- assign count = block.settings.count_override | default: col.products_count -%}
+        {%- assign url = col.url | default: block.settings.link -%}
+        <a
+          href="{{ url }}"
+          role="listitem"
+          class="dz-disc__panel{% if forloop.first %} is-active{% endif %}"
+          data-index="{{ forloop.index0 }}"
+          {{ block.shopify_attributes }}
+        >
+          {%- if img != blank -%}
+            {{ img | image_url: width: 1800 | image_tag:
+              loading: 'lazy',
+              class: 'dz-disc__img',
+              sizes: '(min-width: 990px) 60vw, 100vw',
+              widths: '600, 900, 1200, 1800',
+              alt: block.settings.title
+            }}
+          {%- endif -%}
+          <span class="dz-disc__shade"></span>
+
+          <span class="dz-disc__num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <span class="dz-disc__vtitle">{{ block.settings.title }}</span>
+
+          <span class="dz-disc__body">
+            {%- if block.settings.badge != blank -%}
+              <span class="dz-disc__badge"><i></i>{{ block.settings.badge }}</span>
+            {%- endif -%}
+            {%- if count != blank and count > 0 -%}
+              <span class="dz-disc__count"><b data-count="{{ count }}">{{ count }}</b> {{ section.settings.count_label }}</span>
+            {%- endif -%}
+            <span class="dz-disc__name">{{ block.settings.title }}</span>
+            {%- if block.settings.text != blank -%}
+              <span class="dz-disc__text">{{ block.settings.text }}</span>
+            {%- endif -%}
+            <span class="dz-disc__go">
+              {{ block.settings.button_label | default: 'Scopri' }}
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  #dz-disc-{{ sid }} {
+    --dz-bg: #0b0b0d;
+    --dz-fg: #f5f5f2;
+    --dz-muted: rgba(245,245,242,.62);
+    background:
+      radial-gradient(1200px 500px at 85% -10%, color-mix(in srgb, var(--dz-accent) 22%, transparent), transparent 60%),
+      var(--dz-bg);
+    color: var(--dz-fg);
+    padding: clamp(56px, 8vw, 120px) 0;
+    overflow: hidden;
+  }
+  .dz-disc__inner { max-width: 1440px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 40px); }
+  .dz-disc__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: clamp(28px, 4vw, 48px); }
+  .dz-disc__eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; font: 700 12px/1 ui-monospace, Menlo, monospace; letter-spacing: .28em; text-transform: uppercase; color: var(--dz-accent); }
+  .dz-disc__eyebrow span { width: 36px; height: 2px; background: var(--dz-accent); }
+  .dz-disc__title { margin: 0; font-size: clamp(40px, 7vw, 104px); line-height: .9; letter-spacing: -.045em; font-weight: 800; color: var(--dz-fg); }
+  .dz-disc__all { flex: none; display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18); color: var(--dz-fg); text-decoration: none; font-weight: 600; transition: background .3s, color .3s, border-color .3s; }
+  .dz-disc__all:hover { background: var(--dz-fg); color: var(--dz-bg); border-color: var(--dz-fg); }
+  .dz-disc svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .dz-disc__rail { display: flex; gap: 10px; height: clamp(460px, 62vh, 640px); }
+  .dz-disc__panel {
+    position: relative; flex: 1 1 0; min-width: 0; overflow: hidden; border-radius: 22px;
+    color: var(--dz-fg); text-decoration: none; isolation: isolate; background: #1a1a1e;
+    transition: flex-grow .7s cubic-bezier(.7,0,.2,1);
+  }
+  .dz-disc__panel.is-active { flex-grow: 5; }
+  .dz-disc__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transform: scale(1.12); filter: grayscale(.65) brightness(.7); transition: transform 1.2s cubic-bezier(.2,.7,.2,1), filter .7s; }
+  .dz-disc__panel.is-active .dz-disc__img { transform: scale(1); filter: none; }
+  .dz-disc__shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,0,0,.15) 0%, rgba(0,0,0,.05) 35%, rgba(0,0,0,.85) 100%); }
+  .dz-disc__panel::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--dz-accent); transform: scaleX(0); transform-origin: left; transition: transform .7s .15s cubic-bezier(.7,0,.2,1); }
+  .dz-disc__panel.is-active::after { transform: scaleX(1); }
+
+  .dz-disc__num { position: absolute; top: 20px; left: 20px; font: 700 13px/1 ui-monospace, Menlo, monospace; letter-spacing: .1em; color: var(--dz-muted); }
+  .dz-disc__panel.is-active .dz-disc__num { color: var(--dz-fg); }
+  .dz-disc__vtitle {
+    position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%) rotate(180deg);
+    writing-mode: vertical-rl; white-space: nowrap; font-weight: 800; font-style: italic; text-transform: uppercase;
+    font-size: clamp(20px, 2vw, 28px); letter-spacing: .02em; transition: opacity .4s;
+  }
+  .dz-disc__panel.is-active .dz-disc__vtitle { opacity: 0; }
+
+  .dz-disc__body { position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(22px, 3vw, 40px); display: flex; flex-direction: column; align-items: flex-start; gap: 10px; opacity: 0; transform: translateY(24px); transition: opacity .35s, transform .35s; pointer-events: none; }
+  .dz-disc__panel.is-active .dz-disc__body { opacity: 1; transform: none; transition: opacity .6s .35s, transform .6s .35s cubic-bezier(.2,.7,.2,1); }
+  .dz-disc__badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font: 700 11px/1 ui-monospace, Menlo, monospace; letter-spacing: .18em; text-transform: uppercase; }
+  .dz-disc__badge i { width: 7px; height: 7px; border-radius: 50%; background: var(--dz-accent); box-shadow: 0 0 0 0 var(--dz-accent); animation: dz-pulse 1.8s infinite; }
+  .dz-disc__count { font: 600 12px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--dz-muted); }
+  .dz-disc__count b { color: var(--dz-fg); font-size: 15px; }
+  .dz-disc__name { font-size: clamp(44px, 6.4vw, 108px); line-height: .86; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -.035em; }
+  .dz-disc__text { max-width: 44ch; color: rgba(255,255,255,.82); font-size: 16px; line-height: 1.5; }
+  .dz-disc__go { margin-top: 8px; display: inline-flex; align-items: center; gap: 10px; padding: 13px 20px; border-radius: 999px; background: var(--dz-accent); color: #fff; font-weight: 700; }
+  .dz-disc__go svg { transition: transform .3s; }
+  .dz-disc__panel:hover .dz-disc__go svg { transform: translateX(4px); }
+  .dz-disc__panel:focus-visible { outline: 3px solid var(--dz-accent); outline-offset: 3px; }
+
+  @keyframes dz-pulse { 70% { box-shadow: 0 0 0 8px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+  @media (max-width: 989px) {
+    .dz-disc__head { flex-direction: column; align-items: flex-start; }
+    .dz-disc__rail { flex-direction: column; height: auto; gap: 8px; }
+    .dz-disc__panel { flex: none; height: 84px; transition: height .6s cubic-bezier(.7,0,.2,1); }
+    .dz-disc__panel.is-active { height: 440px; }
+    .dz-disc__vtitle { writing-mode: horizontal-tb; transform: translateY(50%); left: 64px; bottom: 50%; }
+    .dz-disc__num { top: 50%; transform: translateY(-50%); }
+    .dz-disc__panel.is-active .dz-disc__num { top: 20px; transform: none; }
+    .dz-disc__name { font-size: clamp(40px, 12vw, 64px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dz-disc *, .dz-disc__panel { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.getElementById('dz-disc-{{ sid }}');
+    if (!root) return;
+    var panels = root.querySelectorAll('.dz-disc__panel');
+    var mq = window.matchMedia('(hover: hover) and (min-width: 990px)');
+    function activate(p) {
+      panels.forEach(function (x) { x.classList.toggle('is-active', x === p); });
+    }
+    panels.forEach(function (p) {
+      p.addEventListener('mouseenter', function () { if (mq.matches) activate(p); });
+      p.addEventListener('focus', function () { activate(p); });
+      // Touch: il primo tap espande il pannello, il secondo apre la collezione
+      p.addEventListener('click', function (e) {
+        if (!mq.matches && !p.classList.contains('is-active')) { e.preventDefault(); activate(p); }
+      });
+    });
+    // Nel theme editor: selezionare un blocco lo espande
+    document.addEventListener('shopify:block:select', function (e) {
+      var el = e.target && e.target.closest && e.target.closest('.dz-disc__panel');
+      if (el && root.contains(el)) activate(el);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "DZ · Discipline",
+  "tag": "div",
+  "class": "section-dz-discipline",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Occhiello", "default": "Categorie" },
+    { "type": "text", "id": "title", "label": "Titolo", "default": "Scegli la tua disciplina" },
+    { "type": "text", "id": "cta_label", "label": "Testo pulsante", "default": "Tutte le bici" },
+    { "type": "url", "id": "cta_link", "label": "Link pulsante" },
+    { "type": "text", "id": "count_label", "label": "Etichetta conteggio", "default": "modelli" },
+    { "type": "color", "id": "accent", "label": "Colore accento", "default": "#e4002b" }
+  ],
+  "blocks": [
+    {
+      "type": "discipline",
+      "name": "Disciplina",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collezione" },
+        { "type": "text", "id": "title", "label": "Titolo", "default": "Corsa" },
+        { "type": "image_picker", "id": "image", "label": "Immagine (default: immagine collezione)" },
+        { "type": "textarea", "id": "text", "label": "Descrizione" },
+        { "type": "text", "id": "badge", "label": "Badge (es. Pezzi unici)" },
+        { "type": "text", "id": "button_label", "label": "Testo pulsante", "default": "Scopri" },
+        { "type": "number", "id": "count_override", "label": "Conteggio manuale (opzionale)" },
+        { "type": "url", "id": "link", "label": "Link (se nessuna collezione)" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "DZ · Discipline",
+      "blocks": [
+        { "type": "discipline", "settings": { "title": "Usato", "badge": "Pezzi unici", "text": "Bici selezionate e controllate nella nostra officina, pronte a partire." } },
+        { "type": "discipline", "settings": { "title": "Bici da corsa", "text": "Leggerezza, rigidità e aerodinamica per chi vive di watt." } },
+        { "type": "discipline", "settings": { "title": "E-Bike", "text": "Pedalata assistita per andare più lontano, su strada e sentiero." } },
+        { "type": "discipline", "settings": { "title": "Gravel", "text": "Asfalto, sterrato, bikepacking: una bici, zero confini." } },
+        { "type": "discipline", "settings": { "title": "Mountain bike", "text": "Trail, enduro e XC: controllo e divertimento in discesa." } },
+        { "type": "discipline", "settings": { "title": "Urban", "text": "Comode, sicure e con stile per muoversi ogni giorno in città." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
