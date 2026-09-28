@@ -1,62 +1,4 @@
-{%- comment -%}
-  Categorie della home, "Scegli la tua disciplina": pannelli affiancati su fondo
-  bianco. Il pannello attivo si allarga e mostra numero modelli, titolo e
-  pulsante; gli altri restano stretti, in bianco e nero, col titolo in verticale.
-  Su computer i pannelli girano da soli (barra rossa di avanzamento) finche' la
-  sezione e' sullo schermo e il mouse non ci e' sopra; la foto attiva segue il
-  mouse con una luce. Contatore e frecce in alto. Entrata a cascata.
-  Su telefono i pannelli si impilano a fisarmonica: il primo tocco apre,
-  il secondo porta alla collezione.
-  Legge le stesse collezioni e traduzioni della versione precedente.
-{%- endcomment -%}
-{%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
-{%- assign tot = 0 -%}
-{%- for handle in bento -%}{%- if collections[handle] != blank -%}{%- assign tot = tot | plus: 1 -%}{%- endif -%}{%- endfor -%}
-<section class="dzd" data-dzd>
-  <div class="wrap">
-    <div class="dzd-head">
-      <div>
-        <p class="dzd-k"><i></i>01 — 0{{ tot }}</p>
-        <h2>{{ 'home.cat_h' | t }}<span class="dzd-dot">.</span></h2>
-      </div>
-      <div class="dzd-ctl">
-        <div class="dzd-idx" aria-hidden="true"><b data-cur>01</b><span>/ 0{{ tot }}</span></div>
-        <button class="dzd-ar" type="button" data-prev aria-label="Precedente"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-        <button class="dzd-ar" type="button" data-next aria-label="Successiva"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-        <a class="dzd-all" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-    </div>
-    <div class="dzd-rail">
-      {%- assign n = 0 -%}
-      {%- for handle in bento -%}
-        {%- assign c = collections[handle] -%}
-        {%- if c != blank -%}
-          {%- assign n = n | plus: 1 -%}
-          <a class="dzd-p{% if n == 1 %} on{% endif %}" href="{{ c.url }}" style="--i:{{ n }}">
-            {%- if c.featured_image -%}
-              <img class="dzd-img" src="{{ c.featured_image | image_url: width: 1400 }}"
-                   srcset="{{ c.featured_image | image_url: width: 700 }} 700w, {{ c.featured_image | image_url: width: 1400 }} 1400w, {{ c.featured_image | image_url: width: 2000 }} 2000w"
-                   sizes="(min-width: 990px) 60vw, 100vw" alt="" loading="lazy">
-            {%- endif -%}
-            <span class="dzd-sh"></span>
-            <span class="dzd-glow"></span>
-            <span class="dzd-w" aria-hidden="true">0{{ n }}</span>
-            <span class="dzd-n">0{{ n }}</span>
-            <span class="dzd-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
-            <span class="dzd-v">{{ c.title }}</span>
-            <span class="dzd-b">
-              {%- if forloop.first -%}<span class="dzd-flag"><i></i>{{ 'home.flag_unici' | t }}</span>{%- endif -%}
-              <span class="dzd-c" data-count>{{ 'home.modelli' | t: n: c.products_count }}</span>
-              <span class="dzd-t">{{ c.title }}</span>
-              {%- if forloop.first -%}<span class="dzd-p1">{{ 'home.usato_p' | t }}</span>{%- endif -%}
-              <span class="dzd-go">{{ 'home.scopri' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </span>
-          </a>
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
-  </div>
-  <style>
+<!doctype html><html lang=it><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Discipline v2</title><style>body{margin:0;font-family:Inter,system-ui,sans-serif}.wrap{max-width:1360px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
     .dzd{--a:#e4002b;--ink:#0b0b0d;--dur:6s;--ease:cubic-bezier(.7,0,.2,1);background:#fff;color:var(--ink);padding:clamp(56px,8vw,120px) 0;overflow:hidden}
     .dzd svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
     .dzd-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(26px,3.5vw,46px)}
@@ -130,8 +72,7 @@
       .dzd-t{font-size:clamp(40px,12vw,64px)}
     }
     @media (prefers-reduced-motion:reduce){.dzd *,.dzd-p{transition:none!important;animation:none!important}}
-  </style>
-  <script>
+  </style><section class="dzd" data-dzd><div class="wrap"><div class="dzd-head"><div><p class="dzd-k"><i></i>01 — 06</p><h2>Scegli la tua disciplina<span class="dzd-dot">.</span></h2></div><div class="dzd-ctl"><div class="dzd-idx"><b data-cur>01</b><span>/ 06</span></div><button class="dzd-ar" type="button" data-prev><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><button class="dzd-ar" type="button" data-next><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="dzd-all" href="#">Tutte le bici<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div><div class="dzd-rail"><a class="dzd-p on" href="#" style="--i:1"><span class="dzd-img" style="display:block;background:linear-gradient(160deg,#6b4a2e,#1d2b3a)"></span><span class="dzd-sh"></span><span class="dzd-glow"></span><span class="dzd-w">01</span><span class="dzd-n">01</span><span class="dzd-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="dzd-v">Usato</span><span class="dzd-b"><span class="dzd-flag"><i></i>Pezzi unici</span><span class="dzd-c" data-count>38 modelli</span><span class="dzd-t">Usato</span><span class="dzd-p1">Bici selezionate e controllate nella nostra officina, pronte a partire.</span><span class="dzd-go">Scopri<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></a><a class="dzd-p" href="#" style="--i:2"><span class="dzd-img" style="display:block;background:linear-gradient(160deg,#8aa2b8,#3c5a3a)"></span><span class="dzd-sh"></span><span class="dzd-glow"></span><span class="dzd-w">02</span><span class="dzd-n">02</span><span class="dzd-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="dzd-v">Bici da corsa</span><span class="dzd-b"><span class="dzd-c" data-count>62 modelli</span><span class="dzd-t">Bici da corsa</span><span class="dzd-go">Scopri<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></a><a class="dzd-p" href="#" style="--i:3"><span class="dzd-img" style="display:block;background:linear-gradient(160deg,#4d6b4a,#1e2a33)"></span><span class="dzd-sh"></span><span class="dzd-glow"></span><span class="dzd-w">03</span><span class="dzd-n">03</span><span class="dzd-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="dzd-v">E-Bike</span><span class="dzd-b"><span class="dzd-c" data-count>82 modelli</span><span class="dzd-t">E-Bike</span><span class="dzd-go">Scopri<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></a><a class="dzd-p" href="#" style="--i:4"><span class="dzd-img" style="display:block;background:linear-gradient(160deg,#b58b5a,#4a5a3a)"></span><span class="dzd-sh"></span><span class="dzd-glow"></span><span class="dzd-w">04</span><span class="dzd-n">04</span><span class="dzd-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="dzd-v">Gravel</span><span class="dzd-b"><span class="dzd-c" data-count>41 modelli</span><span class="dzd-t">Gravel</span><span class="dzd-go">Scopri<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></a><a class="dzd-p" href="#" style="--i:5"><span class="dzd-img" style="display:block;background:linear-gradient(160deg,#3e4a2e,#16201a)"></span><span class="dzd-sh"></span><span class="dzd-glow"></span><span class="dzd-w">05</span><span class="dzd-n">05</span><span class="dzd-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="dzd-v">Mountain bike</span><span class="dzd-b"><span class="dzd-c" data-count>131 modelli</span><span class="dzd-t">Mountain bike</span><span class="dzd-go">Scopri<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></a><a class="dzd-p" href="#" style="--i:6"><span class="dzd-img" style="display:block;background:linear-gradient(160deg,#9a8a7a,#3a3f55)"></span><span class="dzd-sh"></span><span class="dzd-glow"></span><span class="dzd-w">06</span><span class="dzd-n">06</span><span class="dzd-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="dzd-v">Urban</span><span class="dzd-b"><span class="dzd-c" data-count>26 modelli</span><span class="dzd-t">Urban</span><span class="dzd-go">Scopri<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></a></div></div></section><script>
     (function(){
       var s = document.querySelector('[data-dzd]'); if (!s) return;
       var ps = [].slice.call(s.querySelectorAll('.dzd-p'));
@@ -191,5 +132,4 @@
         }, { threshold: .35 }).observe(s);
       } else { s.classList.add('in'); }
     })();
-  </script>
-</section>
+  </script></html>
