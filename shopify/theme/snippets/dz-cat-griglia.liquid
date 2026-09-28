@@ -1,0 +1,82 @@
+{%- comment -%}
+  Categorie, versione pratica: tutte le discipline visibili subito, niente
+  caroselli ne' animazioni automatiche. Ogni scheda: foto, nome, numero
+  modelli, prezzo di partenza (il piu' basso tra i primi 50 prodotti
+  disponibili) e scorciatoie ai marchi presenti nella collezione (filtro
+  vendor dello store). Stessa intestazione (.block .head) delle altre sezioni
+  della home. Su telefono diventa un elenco compatto con miniatura.
+{%- endcomment -%}
+{%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
+{%- if request.locale.iso_code == 'it' -%}{%- assign da = 'da' -%}{%- else -%}{%- assign da = 'from' -%}{%- endif -%}
+<section class="block wrap dzp">
+  <div class="head"><div><h2>{{ 'home.cat_h' | t }}</h2></div><a class="more" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}</a></div>
+  <div class="dzp-grid">
+    {%- for handle in bento -%}
+      {%- assign c = collections[handle] -%}
+      {%- if c != blank -%}
+        {%- assign minp = 0 -%}
+        {%- for p in c.products limit: 50 -%}
+          {%- if p.available -%}
+            {%- if minp == 0 or p.price_min < minp -%}{%- assign minp = p.price_min -%}{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        <div class="dzp-c">
+          <a class="dzp-ph" href="{{ c.url }}" tabindex="-1" aria-hidden="true">
+            {%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 900 }}" srcset="{{ c.featured_image | image_url: width: 450 }} 450w, {{ c.featured_image | image_url: width: 900 }} 900w" sizes="(min-width: 990px) 33vw, 30vw" alt="" loading="lazy">{%- endif -%}
+            {%- if forloop.first -%}<span class="dzp-flag">{{ 'home.flag_unici' | t }}</span>{%- endif -%}
+          </a>
+          <div class="dzp-b">
+            <a class="dzp-t" href="{{ c.url }}">{{ c.title }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+            <p class="dzp-m">
+              <span>{{ 'home.modelli' | t: n: c.products_count }}</span>
+              {%- if minp > 0 -%}<span class="dzp-pr">{{ da }} <b>{{ minp | money_without_trailing_zeros }}</b></span>{%- endif -%}
+            </p>
+            {%- if c.all_vendors.size > 0 -%}
+              <div class="dzp-v">
+                {%- for v in c.all_vendors limit: 4 -%}
+                  <a href="{{ c.url }}?filter.p.vendor={{ v | url_encode }}">{{ v }}</a>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <style>
+    .dzp{--ink:#111;--mute:#6b6b6b;--line:rgba(17,17,17,.1);--a:#e4002b}
+    .dzp svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .dzp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .dzp-c{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;transition:box-shadow .25s,transform .25s,border-color .25s}
+    .dzp-c:hover{border-color:transparent;box-shadow:0 14px 34px -16px rgba(0,0,0,.28);transform:translateY(-3px)}
+    .dzp-ph{position:relative;display:block;aspect-ratio:16/10;overflow:hidden;background:#f2f2f2}
+    .dzp-ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+    .dzp-c:hover .dzp-ph img{transform:scale(1.04)}
+    .dzp-flag{position:absolute;top:12px;left:12px;padding:6px 10px;border-radius:999px;background:var(--a);color:#fff;font-size:12px;font-weight:600}
+    .dzp-b{display:flex;flex-direction:column;gap:8px;padding:16px 18px 18px}
+    .dzp-t{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--ink);text-decoration:none;font-size:20px;font-weight:700;letter-spacing:-.01em}
+    .dzp-t svg{flex:none;width:30px;height:30px;padding:7px;border-radius:50%;background:#f2f2f2;transition:background .2s,color .2s}
+    .dzp-c:hover .dzp-t svg{background:var(--a);color:#fff}
+    .dzp-t:after{content:"";position:absolute;inset:0}
+    .dzp-c{position:relative}
+    .dzp-m{margin:0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--mute)}
+    .dzp-pr b{color:var(--ink);font-weight:600}
+    .dzp-v{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+    .dzp-v a{padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--ink);text-decoration:none;font-size:12px;font-weight:500;transition:border-color .2s,background .2s}
+    .dzp-v a:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+    @media (max-width:989px){
+      .dzp-grid{grid-template-columns:1fr;gap:10px}
+      .dzp-c{flex-direction:row;align-items:center;border-radius:14px}
+      .dzp-c:hover{transform:none}
+      .dzp-ph{flex:none;width:96px;aspect-ratio:1;margin:8px;border-radius:10px}
+      .dzp-flag{top:6px;left:6px;padding:3px 6px;font-size:10px}
+      .dzp-b{flex:1;min-width:0;padding:10px 12px 10px 4px;gap:4px}
+      .dzp-t{font-size:17px}
+      .dzp-t svg{width:26px;height:26px;padding:6px}
+      .dzp-m{font-size:13px}
+      .dzp-v{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+      .dzp-v::-webkit-scrollbar{display:none}
+      .dzp-v a{flex:none}
+    }
+  </style>
+</section>
