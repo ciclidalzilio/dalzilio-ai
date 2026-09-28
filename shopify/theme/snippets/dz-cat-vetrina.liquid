@@ -1,146 +1,168 @@
 {%- comment -%}
-  Categorie, idea "Vetrina": a sinistra l'elenco delle discipline come schede,
-  a destra una grande foto che cambia con una tendina. Le schede girano da sole
-  (barra rossa nella scheda attiva) finche' la sezione e' sullo schermo e il
-  mouse non ci e' sopra. Sopra la foto una card in vetro con numero modelli,
-  titolo e pulsante. Su telefono le schede diventano pillole scorrevoli.
+  Categorie, "Vetrina" in stile Apple: fondo grigio chiaro, carattere di
+  sistema (SF su Apple), niente maiuscolo corsivo. A sinistra le discipline
+  come pillole con il "+": quella attiva si apre in una scheda bianca con
+  numero modelli e link. A destra la foto grande cambia in dissolvenza.
+  Sotto la foto i puntini di avanzamento e il tasto pausa, come nelle
+  gallerie di apple.com. Gira da sola finche' e' sullo schermo, il mouse non
+  e' sulle pillole e non e' in pausa. Su telefono le pillole scorrono in
+  orizzontale e il testo sta sopra la foto.
 {%- endcomment -%}
 {%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
-<section class="dzv" data-dzv>
+<section class="dza" data-dza>
   <div class="wrap">
-    <div class="dzv-grid">
-      <div class="dzv-side">
-        <p class="dzv-k"><i></i>01 — 0{{ bento.size }}</p>
-        <h2>{{ 'home.cat_h' | t }}<span>.</span></h2>
-        <div class="dzv-tabs" role="tablist">
-          {%- assign n = 0 -%}
-          {%- for handle in bento -%}
-            {%- assign c = collections[handle] -%}
-            {%- if c != blank -%}
-              {%- assign n = n | plus: 1 -%}
-              <button class="dzv-tab{% if n == 1 %} on{% endif %}" type="button" role="tab" data-i="{{ n | minus: 1 }}">
-                <span class="dzv-tn">0{{ n }}</span>
-                <span class="dzv-tt">{{ c.title }}</span>
-                <span class="dzv-tc">{{ c.products_count }}</span>
-                <i class="dzv-tb"></i>
-              </button>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
-        <a class="dzv-all" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-      <div class="dzv-stage">
+    <div class="dza-head">
+      <h2>{{ 'home.cat_h' | t }}.</h2>
+      <a class="dza-link" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="dza-grid">
+      <div class="dza-list" role="tablist">
         {%- assign n = 0 -%}
         {%- for handle in bento -%}
           {%- assign c = collections[handle] -%}
           {%- if c != blank -%}
             {%- assign n = n | plus: 1 -%}
-            <a class="dzv-sl{% if n == 1 %} on{% endif %}" href="{{ c.url }}" tabindex="{% if n == 1 %}0{% else %}-1{% endif %}">
-              {%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 1600 }}" srcset="{{ c.featured_image | image_url: width: 800 }} 800w, {{ c.featured_image | image_url: width: 1600 }} 1600w, {{ c.featured_image | image_url: width: 2200 }} 2200w" sizes="(min-width: 990px) 62vw, 100vw" alt="" loading="lazy">{%- endif -%}
-              <span class="dzv-sh"></span>
-              <span class="dzv-big" aria-hidden="true">0{{ n }}</span>
-              <span class="dzv-card">
-                {%- if forloop.first -%}<span class="dzv-flag"><i></i>{{ 'home.flag_unici' | t }}</span>{%- endif -%}
-                <span class="dzv-c">{{ 'home.modelli' | t: n: c.products_count }}</span>
-                <span class="dzv-t">{{ c.title }}</span>
-                {%- if forloop.first -%}<span class="dzv-p">{{ 'home.usato_p' | t }}</span>{%- endif -%}
-                <span class="dzv-go">{{ 'home.scopri' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-              </span>
-            </a>
+            <div class="dza-it{% if n == 1 %} on{% endif %}">
+              <button class="dza-pill" type="button" role="tab" aria-selected="{% if n == 1 %}true{% else %}false{% endif %}">
+                <span class="dza-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></span>
+                <span class="dza-nm">{{ c.title }}</span>
+              </button>
+              <div class="dza-card">
+                {%- if forloop.first -%}
+                  {%- assign d = 'home.usato_p' | t -%}
+                {%- else -%}
+                  {%- assign d = c.description | strip_html | strip | truncatewords: 22 -%}
+                {%- endif -%}
+                <p class="dza-ct"><b>{{ c.title }}.</b> {{ d }}</p>
+                <p class="dza-meta">{%- if forloop.first -%}<span class="dza-flag">{{ 'home.flag_unici' | t }}</span>{%- endif -%}{{ 'home.modelli' | t: n: c.products_count }}</p>
+                <a class="dza-link" href="{{ c.url }}">{{ 'home.scopri' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+              </div>
+            </div>
           {%- endif -%}
         {%- endfor -%}
+      </div>
+      <div class="dza-right">
+        <div class="dza-stage">
+          {%- assign n = 0 -%}
+          {%- for handle in bento -%}
+            {%- assign c = collections[handle] -%}
+            {%- if c != blank -%}
+              {%- assign n = n | plus: 1 -%}
+              <a class="dza-sl{% if n == 1 %} on{% endif %}" href="{{ c.url }}" tabindex="{% if n == 1 %}0{% else %}-1{% endif %}" aria-label="{{ c.title | escape }}">
+                {%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 1600 }}" srcset="{{ c.featured_image | image_url: width: 800 }} 800w, {{ c.featured_image | image_url: width: 1600 }} 1600w, {{ c.featured_image | image_url: width: 2200 }} 2200w" sizes="(min-width: 990px) 62vw, 100vw" alt="" loading="lazy">{%- endif -%}
+                <span class="dza-cap"><b>{{ c.title }}</b><span>{{ 'home.modelli' | t: n: c.products_count }}</span></span>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="dza-ctl">
+          <div class="dza-dots">
+            {%- for i in (1..n) -%}<button class="dza-dot{% if forloop.first %} on{% endif %}" type="button" aria-label="{{ i }} / {{ n }}"><i></i></button>{%- endfor -%}
+          </div>
+          <button class="dza-play" type="button" aria-label="Pausa" data-play>
+            <svg class="p1" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+            <svg class="p2" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z" fill="currentColor" stroke="none"/></svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
   <style>
-    .dzv{--a:#e4002b;--ink:#0b0b0d;--dur:5s;--ease:cubic-bezier(.7,0,.2,1);background:#fff;color:var(--ink);padding:clamp(56px,8vw,120px) 0}
-    .dzv svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .dzv-grid{display:grid;grid-template-columns:minmax(300px,5fr) 8fr;gap:clamp(24px,4vw,64px);align-items:stretch}
-    .dzv-side{display:flex;flex-direction:column}
-    .dzv-k{display:flex;align-items:center;gap:12px;margin:0 0 16px;font:700 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.26em;color:var(--a)}
-    .dzv-k i{width:34px;height:2px;background:var(--a)}
-    .dzv-side h2{margin:0 0 clamp(24px,3vw,40px);font-size:clamp(40px,5vw,84px);line-height:.9;letter-spacing:-.05em;color:var(--ink)}
-    .dzv-side h2 span{color:var(--a)}
-    .dzv-tabs{display:flex;flex-direction:column;border-top:1px solid rgba(11,11,13,.12)}
-    .dzv-tab{position:relative;display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;padding:18px 4px;border:0;border-bottom:1px solid rgba(11,11,13,.12);background:none;color:rgba(11,11,13,.38);font:inherit;text-align:left;cursor:pointer;transition:color .35s,padding .5s var(--ease)}
-    .dzv-tab:hover{color:rgba(11,11,13,.7)}
-    .dzv-tab.on{color:var(--ink);padding-left:16px}
-    .dzv-tn{font:700 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em}
-    .dzv-tab.on .dzv-tn{color:var(--a)}
-    .dzv-tt{font-size:clamp(22px,2.2vw,34px);font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.03em;line-height:1}
-    .dzv-tc{font:600 12px/1 ui-monospace,Menlo,monospace;padding:6px 10px;border-radius:999px;background:rgba(11,11,13,.06)}
-    .dzv-tab.on .dzv-tc{background:var(--ink);color:#fff}
-    .dzv-tb{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--a);transform:scaleX(0);transform-origin:left}
-    .dzv-tab.on .dzv-tb{transform:scaleX(1);transition:transform .6s var(--ease)}
-    .dzv.auto .dzv-tab.on .dzv-tb{transition:none;animation:dzv-prog var(--dur) linear forwards}
-    .dzv-tab:before{content:"";position:absolute;left:0;top:50%;width:4px;height:0;background:var(--a);border-radius:2px;transform:translateY(-50%);transition:height .5s var(--ease)}
-    .dzv-tab.on:before{height:60%}
-    .dzv-all{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 24px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:600;transition:background .25s}
-    .dzv-tabs+.dzv-all{margin-top:32px}
-    .dzv-all:hover{background:var(--a)}
-    .dzv-stage{position:relative;min-height:clamp(520px,70vh,720px);border-radius:28px;overflow:hidden;background:#e9e8e4;box-shadow:0 40px 80px -40px rgba(0,0,0,.5)}
-    .dzv-sl{position:absolute;inset:0;color:#fff;text-decoration:none;isolation:isolate;clip-path:inset(0 0 0 100%);transition:clip-path .9s var(--ease);z-index:1}
-    .dzv-sl.on{clip-path:inset(0 0 0 0);z-index:2}
-    .dzv-sl.out{clip-path:inset(0 0 0 0);z-index:1}
-    .dzv-sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transform:scale(1.18);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
-    .dzv-sl.on img{transform:scale(1.02)}
-    .dzv-sh{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,0) 40%,rgba(0,0,0,.6))}
-    .dzv-big{position:absolute;right:24px;top:6px;font-size:clamp(120px,14vw,240px);line-height:1;font-weight:900;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.6);opacity:0;transform:translateY(-24px);transition:opacity .5s .3s,transform .9s .3s var(--ease)}
-    .dzv-sl.on .dzv-big{opacity:1;transform:none}
-    .dzv-card{position:absolute;left:clamp(16px,2.4vw,32px);bottom:clamp(16px,2.4vw,32px);max-width:min(520px,calc(100% - 32px));padding:clamp(20px,2.4vw,32px);border-radius:22px;background:rgba(15,15,18,.38);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border:1px solid rgba(255,255,255,.16);display:flex;flex-direction:column;align-items:flex-start;gap:10px;opacity:0;transform:translateY(30px);transition:opacity .3s,transform .3s}
-    .dzv-sl.on .dzv-card{opacity:1;transform:none;transition:opacity .7s .45s,transform .8s .45s cubic-bezier(.2,.7,.2,1)}
-    .dzv-flag{display:inline-flex;align-items:center;gap:8px;padding:6px 11px;border-radius:999px;background:var(--a);font:700 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase}
-    .dzv-flag i{width:6px;height:6px;border-radius:50%;background:#fff}
-    .dzv-c{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.8)}
-    .dzv-t{font-size:clamp(40px,5vw,84px);line-height:.88;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.04em}
-    .dzv-p{font-size:15px;line-height:1.5;color:rgba(255,255,255,.88)}
-    .dzv-go{margin-top:6px;display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:999px;background:#fff;color:var(--ink);font-weight:700;transition:background .3s,color .3s}
-    .dzv-go svg{transition:transform .3s}
-    .dzv-sl:hover .dzv-go{background:var(--a);color:#fff}
-    .dzv-sl:hover .dzv-go svg{transform:translateX(4px)}
-    @keyframes dzv-prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    .dza{--ink:#1d1d1f;--mute:#6e6e73;--a:#e4002b;--dur:5s;--e:cubic-bezier(.28,.11,.32,1);background:#f5f5f7;color:var(--ink);padding:clamp(64px,9vw,140px) 0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+    .dza svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+    .dza-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(32px,4vw,56px)}
+    .dza-head h2{margin:0;font-family:inherit;font-size:clamp(34px,4.6vw,64px);line-height:1.06;font-weight:600;letter-spacing:-.022em;color:var(--ink)}
+    .dza-link{display:inline-flex;align-items:center;gap:2px;color:var(--a);text-decoration:none;font-size:17px;font-weight:400;letter-spacing:-.01em;white-space:nowrap}
+    .dza-link svg{width:14px;height:14px;transition:transform .3s var(--e)}
+    .dza-link:hover{text-decoration:underline}
+    .dza-link:hover svg{transform:translateX(3px)}
+    .dza-grid{display:grid;grid-template-columns:minmax(280px,4fr) 8fr;gap:clamp(24px,3vw,48px);align-items:center}
+    .dza-list{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+    .dza-it{max-width:100%}
+    .dza-pill{display:inline-flex;align-items:center;gap:14px;height:56px;padding:0 26px 0 12px;border:0;border-radius:999px;background:rgba(232,232,237,.9);color:var(--ink);font:inherit;font-size:17px;font-weight:600;letter-spacing:-.01em;cursor:pointer;transition:background .3s var(--e),transform .3s var(--e)}
+    .dza-pill:hover{background:#dcdce1}
+    .dza-pill:active{transform:scale(.97)}
+    .dza-plus{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;flex:none;transition:transform .45s var(--e),background .3s}
+    .dza-card{display:none}
+    .dza-it.on .dza-pill{display:none}
+    .dza-it.on .dza-card{display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:440px;padding:28px 30px;border-radius:28px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.04);transform-origin:left center;animation:dza-in .55s var(--e)}
+    .dza-ct{margin:0;font-size:17px;line-height:1.47;letter-spacing:-.01em;color:var(--mute)}
+    .dza-ct b{color:var(--ink);font-weight:600}
+    .dza-meta{margin:0;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mute)}
+    .dza-flag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:rgba(228,0,43,.1);color:var(--a);font-size:12px;font-weight:600}
+    .dza-right{min-width:0}
+    .dza-stage{position:relative;aspect-ratio:16/11;border-radius:30px;overflow:hidden;background:#e8e8ed}
+    .dza-sl{position:absolute;inset:0;opacity:0;transition:opacity .8s var(--e);color:#fff;text-decoration:none}
+    .dza-sl.on{opacity:1;z-index:1}
+    .dza-sl img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.06);transition:transform 1.4s var(--e)}
+    .dza-sl.on img{transform:none}
+    .dza-cap{display:none}
+    .dza-ctl{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:26px}
+    .dza-dots{display:flex;align-items:center;gap:12px;height:56px;padding:0 24px;border-radius:999px;background:rgba(232,232,237,.9)}
+    .dza-dot{position:relative;width:8px;height:8px;padding:0;border:0;border-radius:999px;background:rgba(29,29,31,.35);cursor:pointer;overflow:hidden;transition:width .45s var(--e),background .3s}
+    .dza-dot:hover{background:rgba(29,29,31,.6)}
+    .dza-dot.on{width:48px;background:rgba(29,29,31,.2)}
+    .dza-dot i{position:absolute;inset:0;background:var(--ink);border-radius:inherit;transform:scaleX(0);transform-origin:left}
+    .dza-dot.on i{transform:scaleX(1)}
+    .dza.auto .dza-dot.on i{animation:dza-prog var(--dur) linear forwards}
+    .dza-play{width:56px;height:56px;border-radius:50%;border:0;background:rgba(232,232,237,.9);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .3s}
+    .dza-play:hover{background:#dcdce1}
+    .dza-play svg{width:18px;height:18px}
+    .dza-play .p2,.dza.paused .dza-play .p1{display:none}
+    .dza.paused .dza-play .p2{display:block}
+    @keyframes dza-prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    @keyframes dza-in{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
     @media (max-width:989px){
-      .dzv-grid{grid-template-columns:minmax(0,1fr)}
-      .dzv-side{min-width:0}
-      .dzv-tabs{flex-direction:row;overflow-x:auto;gap:8px;border:0;margin:0 calc(-1 * clamp(16px,3vw,40px));padding:0 clamp(16px,3vw,40px) 4px;scrollbar-width:none}
-      .dzv-tabs::-webkit-scrollbar{display:none}
-      .dzv-tab{flex:none;display:flex;gap:8px;padding:10px 16px;border:1px solid rgba(11,11,13,.14);border-radius:999px;color:var(--ink)}
-      .dzv-tab.on{padding-left:16px;background:var(--ink);color:#fff;border-color:var(--ink)}
-      .dzv-tn,.dzv-tb,.dzv-tab:before{display:none}
-      .dzv-tt{font-size:15px}
-      .dzv-tab.on .dzv-tc{background:var(--a)}
-      .dzv-all{order:3;margin-top:20px!important}
-      .dzv-stage{min-height:480px}
-      .dzv-big{font-size:120px}
+      .dza-head{flex-direction:column;align-items:flex-start;gap:10px}
+      .dza-grid{grid-template-columns:minmax(0,1fr)}
+      .dza-list{flex-direction:row;overflow-x:auto;gap:8px;margin:0 calc(-1 * clamp(16px,3vw,40px));padding:0 clamp(16px,3vw,40px) 4px;scrollbar-width:none;order:2}
+      .dza-list::-webkit-scrollbar{display:none}
+      .dza-it{flex:none}
+      .dza-it.on .dza-pill{display:inline-flex;background:var(--ink);color:#fff}
+      .dza-it.on .dza-plus{background:#fff;color:var(--ink);transform:rotate(45deg)}
+      .dza-pill{height:44px;font-size:15px;padding:0 18px 0 8px;gap:10px}
+      .dza-plus{width:28px;height:28px}
+      .dza-card{display:none!important}
+      .dza-right{order:1}
+      .dza-stage{aspect-ratio:4/5;border-radius:24px}
+      .dza-cap{display:flex;flex-direction:column;gap:4px;position:absolute;left:0;right:0;bottom:0;padding:60px 22px 22px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.55))}
+      .dza-cap b{font-size:28px;font-weight:600;letter-spacing:-.02em}
+      .dza-cap span{font-size:15px;opacity:.85}
+      .dza-ctl{margin:18px 0 20px}
+      .dza-dots{height:44px;padding:0 18px;gap:10px}
+      .dza-play{width:44px;height:44px}
     }
-    @media (prefers-reduced-motion:reduce){.dzv *{transition:none!important;animation:none!important}}
+    @media (prefers-reduced-motion:reduce){.dza *{transition:none!important;animation:none!important}}
   </style>
   <script>
     (function(){
-      var s = document.querySelector('[data-dzv]'); if (!s) return;
-      var tabs = [].slice.call(s.querySelectorAll('.dzv-tab')), sl = [].slice.call(s.querySelectorAll('.dzv-sl'));
+      var s = document.querySelector('[data-dza]'); if (!s) return;
+      var its = [].slice.call(s.querySelectorAll('.dza-it')), sl = [].slice.call(s.querySelectorAll('.dza-sl')), dots = [].slice.call(s.querySelectorAll('.dza-dot'));
+      var play = s.querySelector('[data-play]'), list = s.querySelector('.dza-list');
       var calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var idx = 0, vis = false, sopra = false, fuori;
+      var idx = 0, vis = false, sopra = false, pausa = calmo;
+      if (calmo) s.classList.add('paused');
+      function riavvia(){ s.classList.remove('auto'); void s.offsetWidth; auto(); }
       function apri(i){
-        i = (i + tabs.length) % tabs.length; if (i === idx) return;
-        clearTimeout(fuori);
-        sl.forEach(function(x){ x.classList.remove('out'); });
-        sl[idx].classList.add('out'); var vecchio = sl[idx];
-        fuori = setTimeout(function(){ vecchio.classList.remove('out'); }, 950);
+        i = (i + its.length) % its.length; if (i === idx) return;
         idx = i;
-        tabs.forEach(function(t, j){ t.classList.toggle('on', j === i); t.setAttribute('aria-selected', j === i); });
-        sl.forEach(function(x, j){ x.classList.toggle('on', j === i); x.tabIndex = j === i ? 0 : -1; });
-        if (tabs[i].scrollIntoView && innerWidth < 990) tabs[i].parentNode.scrollTo({ left: tabs[i].offsetLeft - 16, behavior: 'smooth' });
+        [its, sl, dots].forEach(function(g){ g.forEach(function(x, j){ x.classList.toggle('on', j === i); }); });
+        its.forEach(function(x, j){ x.querySelector('.dza-pill').setAttribute('aria-selected', j === i); });
+        sl.forEach(function(x, j){ x.tabIndex = j === i ? 0 : -1; });
+        if (innerWidth < 990) list.scrollTo({ left: its[i].offsetLeft - 16, behavior: 'smooth' });
       }
-      function auto(){ s.classList.toggle('auto', vis && !sopra && !calmo); }
-      tabs.forEach(function(t, i){
-        t.addEventListener('click', function(){ apri(i); s.classList.remove('auto'); void s.offsetWidth; auto(); });
-        t.addEventListener('mouseenter', function(){ if (matchMedia('(hover: hover)').matches) apri(i); });
-        t.querySelector('.dzv-tb').addEventListener('animationend', function(){ if (s.classList.contains('auto')) apri(i + 1); });
+      function auto(){ s.classList.toggle('auto', vis && !sopra && !pausa); }
+      its.forEach(function(it, i){ it.querySelector('.dza-pill').addEventListener('click', function(){ apri(i); riavvia(); }); });
+      dots.forEach(function(d, i){
+        d.addEventListener('click', function(){ apri(i); riavvia(); });
+        d.querySelector('i').addEventListener('animationend', function(){ if (s.classList.contains('auto')) apri(i + 1); });
       });
-      var g = s.querySelector('.dzv-grid');
-      g.addEventListener('mouseenter', function(){ sopra = true; auto(); });
-      g.addEventListener('mouseleave', function(){ sopra = false; auto(); });
+      play.addEventListener('click', function(){
+        pausa = !pausa; s.classList.toggle('paused', pausa);
+        play.setAttribute('aria-label', pausa ? 'Riproduci' : 'Pausa'); auto();
+      });
+      list.addEventListener('mouseenter', function(){ sopra = true; auto(); });
+      list.addEventListener('mouseleave', function(){ sopra = false; auto(); });
       if ('IntersectionObserver' in window) new IntersectionObserver(function(v){ vis = v[0].isIntersecting; auto(); }, { threshold: .4 }).observe(s);
     })();
   </script>
