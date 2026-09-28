@@ -1,0 +1,104 @@
+{%- comment -%}
+  Categorie, idea "Atelier": impaginazione da rivista di lusso su fondo avorio.
+  Titolo con grazie, mosaico asimmetrico di foto con didascalie sotto
+  (N° 01 — nome, a destra i modelli) divise da un filo sottile. Al passaggio
+  del mouse la foto si ingrandisce piano e un cerchio "Scopri" segue il
+  cursore. Su telefono le foto si impilano a colonna.
+{%- endcomment -%}
+{%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
+<section class="dzt" data-dzt>
+  <div class="wrap">
+    <div class="dzt-head">
+      <p class="dzt-k">N° 01 — 0{{ bento.size }}</p>
+      <h2>{{ 'home.cat_h' | t }}</h2>
+      <a class="dzt-all" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}</a>
+    </div>
+    <div class="dzt-grid">
+      {%- assign n = 0 -%}
+      {%- for handle in bento -%}
+        {%- assign c = collections[handle] -%}
+        {%- if c != blank -%}
+          {%- assign n = n | plus: 1 -%}
+          <a class="dzt-it dzt-{{ n }}" href="{{ c.url }}">
+            <span class="dzt-ph">
+              {%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 1400 }}" srcset="{{ c.featured_image | image_url: width: 700 }} 700w, {{ c.featured_image | image_url: width: 1400 }} 1400w, {{ c.featured_image | image_url: width: 2000 }} 2000w" sizes="(min-width: 990px) 50vw, 100vw" alt="{{ c.title | escape }}" loading="lazy">{%- endif -%}
+              {%- if forloop.first -%}<em class="dzt-flag">{{ 'home.flag_unici' | t }}</em>{%- endif -%}
+            </span>
+            <span class="dzt-cap">
+              <span class="dzt-nm"><i>N° 0{{ n }}</i>{{ c.title }}</span>
+              <span class="dzt-ct">{{ 'home.modelli' | t: n: c.products_count }}</span>
+            </span>
+            {%- if forloop.first -%}<span class="dzt-p">{{ 'home.usato_p' | t }}</span>{%- endif -%}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  <span class="dzt-cur" aria-hidden="true">{{ 'home.scopri' | t }}</span>
+  <style>
+    .dzt{--ink:#161514;--mute:#77726b;--bg:#f3efe8;--a:#e4002b;--e:cubic-bezier(.22,.61,.36,1);--serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;position:relative;background:var(--bg);color:var(--ink);padding:clamp(72px,10vw,150px) 0}
+    .dzt-head{display:grid;grid-template-columns:1fr auto;align-items:end;gap:18px 30px;margin-bottom:clamp(40px,5vw,72px);padding-bottom:clamp(22px,2.4vw,32px);border-bottom:1px solid rgba(22,21,20,.2)}
+    .dzt-k{grid-column:1/-1;margin:0;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--mute)}
+    .dzt-head h2{margin:0;font-family:var(--serif);font-size:clamp(44px,7vw,112px);line-height:.95;font-weight:400;letter-spacing:-.025em;color:var(--ink)}
+    .dzt-all{color:var(--ink);text-decoration:none;font-size:13px;letter-spacing:.24em;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid var(--ink);white-space:nowrap;justify-self:start;transition:color .3s,border-color .3s}
+    .dzt-all:hover{color:var(--a);border-color:var(--a)}
+    .dzt-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(36px,4vw,64px) clamp(18px,2vw,32px)}
+    .dzt-it{display:flex;flex-direction:column;gap:16px;color:var(--ink);text-decoration:none}
+    .dzt-1{grid-column:1/8;grid-row:span 2}
+    .dzt-2{grid-column:8/13}
+    .dzt-3{grid-column:8/13}
+    .dzt-4{grid-column:1/5}
+    .dzt-5{grid-column:5/9;margin-top:clamp(40px,6vw,96px)}
+    .dzt-6{grid-column:9/13}
+    .dzt-ph{position:relative;display:block;overflow:hidden;cursor:none;border-radius:4px;background:#e4ded4;aspect-ratio:4/3}
+    .dzt-1 .dzt-ph{aspect-ratio:auto;flex:1;min-height:420px}
+    .dzt-4 .dzt-ph,.dzt-5 .dzt-ph,.dzt-6 .dzt-ph{aspect-ratio:4/5}
+    .dzt-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.02);transition:transform 1.6s var(--e),filter 1.2s var(--e);filter:saturate(.9)}
+    .dzt-it:hover .dzt-ph img{transform:scale(1.08);filter:saturate(1.05)}
+    .dzt-flag{position:absolute;top:18px;left:18px;padding:8px 14px;border-radius:999px;background:var(--bg);color:var(--ink);font-style:normal;font-size:11px;letter-spacing:.24em;text-transform:uppercase}
+    .dzt-cap{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:14px;border-top:1px solid rgba(22,21,20,.2);position:relative}
+    .dzt-cap:after{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--e)}
+    .dzt-it:hover .dzt-cap:after{transform:scaleX(1)}
+    .dzt-nm{display:flex;align-items:baseline;gap:14px;font-family:var(--serif);font-size:clamp(24px,2.3vw,36px);line-height:1.05;letter-spacing:-.01em}
+    .dzt-1 .dzt-nm{font-size:clamp(32px,3.4vw,54px)}
+    .dzt-nm i{font-family:inherit;font-style:italic;font-size:14px;letter-spacing:.06em;color:var(--mute)}
+    .dzt-ct{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+    .dzt-p{max-width:52ch;font-size:16px;line-height:1.6;color:var(--mute)}
+    .dzt-cur{position:absolute;left:0;top:0;z-index:5;width:104px;height:104px;margin:-52px 0 0 -52px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--bg);font-size:12px;letter-spacing:.2em;text-transform:uppercase;pointer-events:none;transform:translate3d(var(--x,0),var(--y,0),0) scale(0);transition:transform .45s var(--e)}
+    .dzt.cur .dzt-cur{transform:translate3d(var(--x,0),var(--y,0),0) scale(1)}
+    @media (max-width:989px){
+      .dzt-head{grid-template-columns:1fr}
+      .dzt-grid{grid-template-columns:1fr;gap:40px}
+      .dzt-it{grid-column:auto!important;margin-top:0!important}
+      .dzt-ph{cursor:pointer}
+      .dzt-1 .dzt-ph{min-height:0;aspect-ratio:4/5;flex:none}
+      .dzt-cur{display:none}
+    }
+    @media (hover:none){.dzt-ph{cursor:pointer}.dzt-cur{display:none}}
+    @media (prefers-reduced-motion:reduce){.dzt *{transition:none!important}}
+  </style>
+  <script>
+    (function(){
+      var s = document.querySelector('[data-dzt]'); if (!s) return;
+      var cur = s.querySelector('.dzt-cur'), fine = matchMedia('(hover: hover) and (min-width: 990px)');
+      var x = 0, y = 0, tx = 0, ty = 0, raf = 0;
+      function giro(){
+        x += (tx - x) * .2; y += (ty - y) * .2;
+        cur.style.setProperty('--x', x + 'px'); cur.style.setProperty('--y', y + 'px');
+        raf = (Math.abs(tx - x) > .3 || Math.abs(ty - y) > .3) ? requestAnimationFrame(giro) : 0;
+      }
+      s.querySelectorAll('.dzt-ph').forEach(function(ph){
+        ph.addEventListener('mouseenter', function(e){
+          if (!fine.matches) return;
+          var r = s.getBoundingClientRect(); x = tx = e.clientX - r.left; y = ty = e.clientY - r.top; giro();
+          s.classList.add('cur');
+        });
+        ph.addEventListener('mouseleave', function(){ s.classList.remove('cur'); });
+        ph.addEventListener('mousemove', function(e){
+          var r = s.getBoundingClientRect(); tx = e.clientX - r.left; ty = e.clientY - r.top;
+          if (!raf) raf = requestAnimationFrame(giro);
+        });
+      });
+    })();
+  </script>
+</section>

@@ -1,0 +1,107 @@
+{%- comment -%}
+  Categorie, idea "Cinema": foto a tutto schermo, da bordo a bordo, su fondo
+  nero, con zoom lentissimo. In basso a sinistra titolo e pulsante della
+  disciplina attiva; in fondo una barra con tutte le discipline, la linea
+  sopra quella attiva si riempie mentre scorre il tempo. Gira da sola finche'
+  e' sullo schermo e il mouse non e' sulla barra.
+{%- endcomment -%}
+{%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
+<section class="dzc" data-dzc>
+  {%- assign n = 0 -%}
+  {%- for handle in bento -%}
+    {%- assign c = collections[handle] -%}
+    {%- if c != blank -%}
+      {%- assign n = n | plus: 1 -%}
+      <div class="dzc-sl{% if n == 1 %} on{% endif %}" aria-hidden="{% if n == 1 %}false{% else %}true{% endif %}">
+        {%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 2400 }}" srcset="{{ c.featured_image | image_url: width: 1200 }} 1200w, {{ c.featured_image | image_url: width: 2400 }} 2400w, {{ c.featured_image | image_url: width: 3200 }} 3200w" sizes="100vw" alt="" loading="lazy">{%- endif -%}
+        <div class="wrap dzc-txt">
+          <p class="dzc-c">{% if forloop.first %}<span>{{ 'home.flag_unici' | t }}</span>{% endif %}{{ 'home.modelli' | t: n: c.products_count }}</p>
+          <h3>{{ c.title }}</h3>
+          {%- if forloop.first -%}<p class="dzc-p">{{ 'home.usato_p' | t }}</p>{%- endif -%}
+          <a class="dzc-go" href="{{ c.url }}" tabindex="{% if n == 1 %}0{% else %}-1{% endif %}">{{ 'home.scopri' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+  <div class="dzc-veil" aria-hidden="true"></div>
+  <div class="wrap dzc-top">
+    <h2>{{ 'home.cat_h' | t }}</h2>
+    <a class="dzc-all" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}</a>
+  </div>
+  <div class="wrap dzc-nav" role="tablist">
+    {%- assign n = 0 -%}
+    {%- for handle in bento -%}
+      {%- assign c = collections[handle] -%}
+      {%- if c != blank -%}
+        {%- assign n = n | plus: 1 -%}
+        <button class="dzc-tab{% if n == 1 %} on{% endif %}" type="button" role="tab"><i></i><b>0{{ n }}</b><span>{{ c.title }}</span></button>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <style>
+    .dzc{--dur:6s;--e:cubic-bezier(.65,0,.35,1);position:relative;height:clamp(600px,92vh,940px);background:#0a0a0a;color:#fff;overflow:hidden;isolation:isolate}
+    .dzc svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+    .dzc-sl{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity 1.2s var(--e),visibility 0s 1.2s}
+    .dzc-sl.on{opacity:1;visibility:visible;transition:opacity 1.2s var(--e);z-index:1}
+    .dzc-sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 1.6s var(--e)}
+    .dzc-sl.on img{transform:scale(1);transition:transform 9s linear}
+    .dzc-veil{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 26%,rgba(0,0,0,0) 45%,rgba(0,0,0,.72) 100%),linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0) 55%)}
+    .dzc-top{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding-top:clamp(28px,4vw,56px)}
+    .dzc-top h2{margin:0;color:#fff;font-size:clamp(15px,1.2vw,18px);font-weight:500;letter-spacing:.32em;text-transform:uppercase}
+    .dzc-all{color:#fff;text-decoration:none;font-size:14px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.5);padding-bottom:4px;transition:border-color .3s}
+    .dzc-all:hover{border-color:#fff}
+    .dzc-txt{position:absolute;left:0;right:0;bottom:clamp(130px,15vh,170px);z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+    .dzc-txt>*{opacity:0;transform:translateY(30px);transition:opacity .5s,transform .5s}
+    .dzc-sl.on .dzc-txt>*{opacity:1;transform:none;transition:opacity 1s var(--e),transform 1.2s var(--e)}
+    .dzc-sl.on .dzc-txt>:nth-child(1){transition-delay:.35s}.dzc-sl.on .dzc-txt>:nth-child(2){transition-delay:.45s}.dzc-sl.on .dzc-txt>:nth-child(3){transition-delay:.55s}.dzc-sl.on .dzc-txt>:nth-child(4){transition-delay:.65s}
+    .dzc-c{margin:0;display:flex;align-items:center;gap:14px;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+    .dzc-c span{padding:6px 12px;border:1px solid rgba(255,255,255,.45);border-radius:999px;letter-spacing:.2em;font-size:11px}
+    .dzc-txt h3{margin:0;color:#fff;font-size:clamp(56px,10vw,168px);line-height:.88;font-weight:700;letter-spacing:-.045em}
+    .dzc-p{margin:0;max-width:46ch;font-size:17px;line-height:1.55;color:rgba(255,255,255,.82)}
+    .dzc-go{display:inline-flex;align-items:center;gap:14px;height:54px;padding:0 28px;border:1px solid rgba(255,255,255,.6);border-radius:999px;color:#fff;text-decoration:none;font-size:13px;letter-spacing:.22em;text-transform:uppercase;transition:background .4s,color .4s,border-color .4s}
+    .dzc-go:hover{background:#fff;color:#0a0a0a;border-color:#fff}
+    .dzc-go svg{transition:transform .4s var(--e)}.dzc-go:hover svg{transform:translateX(4px)}
+    .dzc-nav{position:absolute;left:0;right:0;bottom:0;z-index:3;display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(12px,2vw,28px);padding-bottom:clamp(26px,3.4vw,44px)}
+    .dzc-tab{position:relative;display:flex;align-items:baseline;gap:12px;padding:20px 0 0;border:0;background:none;color:rgba(255,255,255,.5);font:inherit;text-align:left;cursor:pointer;transition:color .4s}
+    .dzc-tab:hover,.dzc-tab.on{color:#fff}
+    .dzc-tab:before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:rgba(255,255,255,.28)}
+    .dzc-tab i{position:absolute;left:0;right:0;top:-.5px;height:2px;background:#fff;transform:scaleX(0);transform-origin:left}
+    .dzc-tab.on i{transform:scaleX(1);transition:transform .8s var(--e)}
+    .dzc.auto .dzc-tab.on i{transition:none;animation:dzc-prog var(--dur) linear forwards}
+    .dzc-tab b{font-size:12px;font-weight:500;letter-spacing:.14em}
+    .dzc-tab span{font-size:clamp(14px,1.1vw,17px);font-weight:500;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    @keyframes dzc-prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    @media (max-width:989px){
+      .dzc{height:clamp(560px,86vh,760px)}
+      .dzc-top{flex-direction:column;gap:14px}
+      .dzc-txt{bottom:108px;gap:14px}
+      .dzc-p{font-size:15px}
+      .dzc-nav{display:flex;overflow-x:auto;gap:22px;scrollbar-width:none}
+      .dzc-nav::-webkit-scrollbar{display:none}
+      .dzc-tab{flex:none;min-width:120px}
+    }
+    @media (prefers-reduced-motion:reduce){.dzc *{transition:none!important;animation:none!important}}
+  </style>
+  <script>
+    (function(){
+      var s = document.querySelector('[data-dzc]'); if (!s) return;
+      var sl = [].slice.call(s.querySelectorAll('.dzc-sl')), tb = [].slice.call(s.querySelectorAll('.dzc-tab'));
+      var nav = s.querySelector('.dzc-nav'), calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var idx = 0, vis = false, sopra = false;
+      function apri(i){
+        i = (i + sl.length) % sl.length; if (i === idx) return; idx = i;
+        sl.forEach(function(x, j){ x.classList.toggle('on', j === i); x.setAttribute('aria-hidden', j !== i); x.querySelector('.dzc-go').tabIndex = j === i ? 0 : -1; });
+        tb.forEach(function(x, j){ x.classList.toggle('on', j === i); x.setAttribute('aria-selected', j === i); });
+        if (innerWidth < 990) nav.scrollTo({ left: tb[i].offsetLeft - 20, behavior: 'smooth' });
+      }
+      function auto(){ s.classList.toggle('auto', vis && !sopra && !calmo); }
+      tb.forEach(function(t, i){
+        t.addEventListener('click', function(){ apri(i); s.classList.remove('auto'); void s.offsetWidth; auto(); });
+        t.querySelector('i').addEventListener('animationend', function(){ if (s.classList.contains('auto')) apri(i + 1); });
+      });
+      nav.addEventListener('mouseenter', function(){ sopra = true; auto(); });
+      nav.addEventListener('mouseleave', function(){ sopra = false; auto(); });
+      if ('IntersectionObserver' in window) new IntersectionObserver(function(v){ vis = v[0].isIntersecting; auto(); }, { threshold: .5 }).observe(s);
+    })();
+  </script>
+</section>

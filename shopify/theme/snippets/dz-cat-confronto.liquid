@@ -1,12 +1,11 @@
 {%- comment -%} Solo per il tema di prova: mette in fila le idee per le categorie, con un'etichetta sopra ciascuna. {%- endcomment -%}
-{%- assign idee = 'dz-discipline|IDEA A — PANNELLI (v2),dz-cat-lista|IDEA B — INDICE,dz-cat-galleria|IDEA C — GALLERIA,dz-cat-vetrina|IDEA D — VETRINA' | split: ',' -%}
+{%- assign idee = 'dz-cat-cinema|IDEA E — CINEMA,dz-cat-atelier|IDEA F — ATELIER,dz-cat-racconto|IDEA G — RACCONTO' | split: ',' -%}
 {%- for riga in idee -%}
   {%- assign x = riga | split: '|' -%}
   <div style="position:relative;z-index:5;background:#e4002b;color:#fff;font:700 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;padding:16px 24px;text-align:center">{{ x[1] }}</div>
   {%- case x[0] -%}
-    {%- when 'dz-discipline' -%}{% render 'dz-discipline' %}
-    {%- when 'dz-cat-lista' -%}{% render 'dz-cat-lista' %}
-    {%- when 'dz-cat-galleria' -%}{% render 'dz-cat-galleria' %}
-    {%- when 'dz-cat-vetrina' -%}{% render 'dz-cat-vetrina' %}
+    {%- when 'dz-cat-cinema' -%}{% render 'dz-cat-cinema' %}
+    {%- when 'dz-cat-atelier' -%}{% render 'dz-cat-atelier' %}
+    {%- when 'dz-cat-racconto' -%}{% render 'dz-cat-racconto' %}
   {%- endcase -%}
 {%- endfor -%}
