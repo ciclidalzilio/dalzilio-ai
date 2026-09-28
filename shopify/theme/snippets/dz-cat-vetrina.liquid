@@ -1,0 +1,147 @@
+{%- comment -%}
+  Categorie, idea "Vetrina": a sinistra l'elenco delle discipline come schede,
+  a destra una grande foto che cambia con una tendina. Le schede girano da sole
+  (barra rossa nella scheda attiva) finche' la sezione e' sullo schermo e il
+  mouse non ci e' sopra. Sopra la foto una card in vetro con numero modelli,
+  titolo e pulsante. Su telefono le schede diventano pillole scorrevoli.
+{%- endcomment -%}
+{%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
+<section class="dzv" data-dzv>
+  <div class="wrap">
+    <div class="dzv-grid">
+      <div class="dzv-side">
+        <p class="dzv-k"><i></i>01 — 0{{ bento.size }}</p>
+        <h2>{{ 'home.cat_h' | t }}<span>.</span></h2>
+        <div class="dzv-tabs" role="tablist">
+          {%- assign n = 0 -%}
+          {%- for handle in bento -%}
+            {%- assign c = collections[handle] -%}
+            {%- if c != blank -%}
+              {%- assign n = n | plus: 1 -%}
+              <button class="dzv-tab{% if n == 1 %} on{% endif %}" type="button" role="tab" data-i="{{ n | minus: 1 }}">
+                <span class="dzv-tn">0{{ n }}</span>
+                <span class="dzv-tt">{{ c.title }}</span>
+                <span class="dzv-tc">{{ c.products_count }}</span>
+                <i class="dzv-tb"></i>
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <a class="dzv-all" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="dzv-stage">
+        {%- assign n = 0 -%}
+        {%- for handle in bento -%}
+          {%- assign c = collections[handle] -%}
+          {%- if c != blank -%}
+            {%- assign n = n | plus: 1 -%}
+            <a class="dzv-sl{% if n == 1 %} on{% endif %}" href="{{ c.url }}" tabindex="{% if n == 1 %}0{% else %}-1{% endif %}">
+              {%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 1600 }}" srcset="{{ c.featured_image | image_url: width: 800 }} 800w, {{ c.featured_image | image_url: width: 1600 }} 1600w, {{ c.featured_image | image_url: width: 2200 }} 2200w" sizes="(min-width: 990px) 62vw, 100vw" alt="" loading="lazy">{%- endif -%}
+              <span class="dzv-sh"></span>
+              <span class="dzv-big" aria-hidden="true">0{{ n }}</span>
+              <span class="dzv-card">
+                {%- if forloop.first -%}<span class="dzv-flag"><i></i>{{ 'home.flag_unici' | t }}</span>{%- endif -%}
+                <span class="dzv-c">{{ 'home.modelli' | t: n: c.products_count }}</span>
+                <span class="dzv-t">{{ c.title }}</span>
+                {%- if forloop.first -%}<span class="dzv-p">{{ 'home.usato_p' | t }}</span>{%- endif -%}
+                <span class="dzv-go">{{ 'home.scopri' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+              </span>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  <style>
+    .dzv{--a:#e4002b;--ink:#0b0b0d;--dur:5s;--ease:cubic-bezier(.7,0,.2,1);background:#fff;color:var(--ink);padding:clamp(56px,8vw,120px) 0}
+    .dzv svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .dzv-grid{display:grid;grid-template-columns:minmax(300px,5fr) 8fr;gap:clamp(24px,4vw,64px);align-items:stretch}
+    .dzv-side{display:flex;flex-direction:column}
+    .dzv-k{display:flex;align-items:center;gap:12px;margin:0 0 16px;font:700 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.26em;color:var(--a)}
+    .dzv-k i{width:34px;height:2px;background:var(--a)}
+    .dzv-side h2{margin:0 0 clamp(24px,3vw,40px);font-size:clamp(40px,5vw,84px);line-height:.9;letter-spacing:-.05em;color:var(--ink)}
+    .dzv-side h2 span{color:var(--a)}
+    .dzv-tabs{display:flex;flex-direction:column;border-top:1px solid rgba(11,11,13,.12)}
+    .dzv-tab{position:relative;display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;padding:18px 4px;border:0;border-bottom:1px solid rgba(11,11,13,.12);background:none;color:rgba(11,11,13,.38);font:inherit;text-align:left;cursor:pointer;transition:color .35s,padding .5s var(--ease)}
+    .dzv-tab:hover{color:rgba(11,11,13,.7)}
+    .dzv-tab.on{color:var(--ink);padding-left:16px}
+    .dzv-tn{font:700 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em}
+    .dzv-tab.on .dzv-tn{color:var(--a)}
+    .dzv-tt{font-size:clamp(22px,2.2vw,34px);font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.03em;line-height:1}
+    .dzv-tc{font:600 12px/1 ui-monospace,Menlo,monospace;padding:6px 10px;border-radius:999px;background:rgba(11,11,13,.06)}
+    .dzv-tab.on .dzv-tc{background:var(--ink);color:#fff}
+    .dzv-tb{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--a);transform:scaleX(0);transform-origin:left}
+    .dzv-tab.on .dzv-tb{transform:scaleX(1);transition:transform .6s var(--ease)}
+    .dzv.auto .dzv-tab.on .dzv-tb{transition:none;animation:dzv-prog var(--dur) linear forwards}
+    .dzv-tab:before{content:"";position:absolute;left:0;top:50%;width:4px;height:0;background:var(--a);border-radius:2px;transform:translateY(-50%);transition:height .5s var(--ease)}
+    .dzv-tab.on:before{height:60%}
+    .dzv-all{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 24px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:600;transition:background .25s}
+    .dzv-tabs+.dzv-all{margin-top:32px}
+    .dzv-all:hover{background:var(--a)}
+    .dzv-stage{position:relative;min-height:clamp(520px,70vh,720px);border-radius:28px;overflow:hidden;background:#e9e8e4;box-shadow:0 40px 80px -40px rgba(0,0,0,.5)}
+    .dzv-sl{position:absolute;inset:0;color:#fff;text-decoration:none;isolation:isolate;clip-path:inset(0 0 0 100%);transition:clip-path .9s var(--ease);z-index:1}
+    .dzv-sl.on{clip-path:inset(0 0 0 0);z-index:2}
+    .dzv-sl.out{clip-path:inset(0 0 0 0);z-index:1}
+    .dzv-sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transform:scale(1.18);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+    .dzv-sl.on img{transform:scale(1.02)}
+    .dzv-sh{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,0) 40%,rgba(0,0,0,.6))}
+    .dzv-big{position:absolute;right:24px;top:6px;font-size:clamp(120px,14vw,240px);line-height:1;font-weight:900;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.6);opacity:0;transform:translateY(-24px);transition:opacity .5s .3s,transform .9s .3s var(--ease)}
+    .dzv-sl.on .dzv-big{opacity:1;transform:none}
+    .dzv-card{position:absolute;left:clamp(16px,2.4vw,32px);bottom:clamp(16px,2.4vw,32px);max-width:min(520px,calc(100% - 32px));padding:clamp(20px,2.4vw,32px);border-radius:22px;background:rgba(15,15,18,.38);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border:1px solid rgba(255,255,255,.16);display:flex;flex-direction:column;align-items:flex-start;gap:10px;opacity:0;transform:translateY(30px);transition:opacity .3s,transform .3s}
+    .dzv-sl.on .dzv-card{opacity:1;transform:none;transition:opacity .7s .45s,transform .8s .45s cubic-bezier(.2,.7,.2,1)}
+    .dzv-flag{display:inline-flex;align-items:center;gap:8px;padding:6px 11px;border-radius:999px;background:var(--a);font:700 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase}
+    .dzv-flag i{width:6px;height:6px;border-radius:50%;background:#fff}
+    .dzv-c{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+    .dzv-t{font-size:clamp(40px,5vw,84px);line-height:.88;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.04em}
+    .dzv-p{font-size:15px;line-height:1.5;color:rgba(255,255,255,.88)}
+    .dzv-go{margin-top:6px;display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:999px;background:#fff;color:var(--ink);font-weight:700;transition:background .3s,color .3s}
+    .dzv-go svg{transition:transform .3s}
+    .dzv-sl:hover .dzv-go{background:var(--a);color:#fff}
+    .dzv-sl:hover .dzv-go svg{transform:translateX(4px)}
+    @keyframes dzv-prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    @media (max-width:989px){
+      .dzv-grid{grid-template-columns:minmax(0,1fr)}
+      .dzv-side{min-width:0}
+      .dzv-tabs{flex-direction:row;overflow-x:auto;gap:8px;border:0;margin:0 calc(-1 * clamp(16px,3vw,40px));padding:0 clamp(16px,3vw,40px) 4px;scrollbar-width:none}
+      .dzv-tabs::-webkit-scrollbar{display:none}
+      .dzv-tab{flex:none;display:flex;gap:8px;padding:10px 16px;border:1px solid rgba(11,11,13,.14);border-radius:999px;color:var(--ink)}
+      .dzv-tab.on{padding-left:16px;background:var(--ink);color:#fff;border-color:var(--ink)}
+      .dzv-tn,.dzv-tb,.dzv-tab:before{display:none}
+      .dzv-tt{font-size:15px}
+      .dzv-tab.on .dzv-tc{background:var(--a)}
+      .dzv-all{order:3;margin-top:20px!important}
+      .dzv-stage{min-height:480px}
+      .dzv-big{font-size:120px}
+    }
+    @media (prefers-reduced-motion:reduce){.dzv *{transition:none!important;animation:none!important}}
+  </style>
+  <script>
+    (function(){
+      var s = document.querySelector('[data-dzv]'); if (!s) return;
+      var tabs = [].slice.call(s.querySelectorAll('.dzv-tab')), sl = [].slice.call(s.querySelectorAll('.dzv-sl'));
+      var calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var idx = 0, vis = false, sopra = false, fuori;
+      function apri(i){
+        i = (i + tabs.length) % tabs.length; if (i === idx) return;
+        clearTimeout(fuori);
+        sl.forEach(function(x){ x.classList.remove('out'); });
+        sl[idx].classList.add('out'); var vecchio = sl[idx];
+        fuori = setTimeout(function(){ vecchio.classList.remove('out'); }, 950);
+        idx = i;
+        tabs.forEach(function(t, j){ t.classList.toggle('on', j === i); t.setAttribute('aria-selected', j === i); });
+        sl.forEach(function(x, j){ x.classList.toggle('on', j === i); x.tabIndex = j === i ? 0 : -1; });
+        if (tabs[i].scrollIntoView && innerWidth < 990) tabs[i].parentNode.scrollTo({ left: tabs[i].offsetLeft - 16, behavior: 'smooth' });
+      }
+      function auto(){ s.classList.toggle('auto', vis && !sopra && !calmo); }
+      tabs.forEach(function(t, i){
+        t.addEventListener('click', function(){ apri(i); s.classList.remove('auto'); void s.offsetWidth; auto(); });
+        t.addEventListener('mouseenter', function(){ if (matchMedia('(hover: hover)').matches) apri(i); });
+        t.querySelector('.dzv-tb').addEventListener('animationend', function(){ if (s.classList.contains('auto')) apri(i + 1); });
+      });
+      var g = s.querySelector('.dzv-grid');
+      g.addEventListener('mouseenter', function(){ sopra = true; auto(); });
+      g.addEventListener('mouseleave', function(){ sopra = false; auto(); });
+      if ('IntersectionObserver' in window) new IntersectionObserver(function(v){ vis = v[0].isIntersecting; auto(); }, { threshold: .4 }).observe(s);
+    })();
+  </script>
+</section>

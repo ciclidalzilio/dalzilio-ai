@@ -1,0 +1,128 @@
+{%- comment -%}
+  Categorie, idea "Galleria": schede alte in fila orizzontale che escono dal
+  bordo destro dello schermo. Si scorrono trascinando, con la rotella, con le
+  frecce o col dito; le schede sono sfalsate in altezza, la foto si ingrandisce
+  e il pulsante si allunga al passaggio del mouse. Barra di avanzamento sotto.
+{%- endcomment -%}
+{%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
+<section class="dzg" data-dzg>
+  <div class="wrap">
+    <div class="dzg-head">
+      <div>
+        <p class="dzg-k"><i></i>01 — 0{{ bento.size }}</p>
+        <h2>{{ 'home.cat_h' | t }}<span>.</span></h2>
+      </div>
+      <div class="dzg-ctl">
+        <button class="dzg-ar" type="button" data-prev aria-label="Precedente"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button class="dzg-ar" type="button" data-next aria-label="Successiva"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <a class="dzg-all" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="dzg-track" data-track>
+    {%- assign n = 0 -%}
+    {%- for handle in bento -%}
+      {%- assign c = collections[handle] -%}
+      {%- if c != blank -%}
+        {%- assign n = n | plus: 1 -%}
+        <a class="dzg-c{% if forloop.first %} big{% endif %}" href="{{ c.url }}" draggable="false">
+          {%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 1200 }}" srcset="{{ c.featured_image | image_url: width: 600 }} 600w, {{ c.featured_image | image_url: width: 1200 }} 1200w" sizes="(min-width: 990px) 34vw, 80vw" alt="" loading="lazy" draggable="false">{%- endif -%}
+          <span class="dzg-sh"></span>
+          <span class="dzg-top"><b>0{{ n }}</b><span>{{ 'home.modelli' | t: n: c.products_count }}</span></span>
+          <span class="dzg-bot">
+            {%- if forloop.first -%}<span class="dzg-flag"><i></i>{{ 'home.flag_unici' | t }}</span>{%- endif -%}
+            <span class="dzg-t">{{ c.title }}</span>
+            {%- if forloop.first -%}<span class="dzg-p">{{ 'home.usato_p' | t }}</span>{%- endif -%}
+            <span class="dzg-go"><span>{{ 'home.scopri' | t }}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </span>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+    <span class="dzg-end" aria-hidden="true"></span>
+  </div>
+  <div class="wrap"><div class="dzg-bar"><i data-bar></i></div></div>
+  <style>
+    .dzg{--a:#e4002b;--ink:#0b0b0d;background:#fff;color:var(--ink);padding:clamp(56px,8vw,120px) 0;overflow:hidden}
+    .dzg svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .dzg-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(28px,4vw,52px)}
+    .dzg-k{display:flex;align-items:center;gap:12px;margin:0 0 16px;font:700 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.26em;color:var(--a)}
+    .dzg-k i{width:34px;height:2px;background:var(--a)}
+    .dzg-head h2{margin:0;font-size:clamp(40px,6.8vw,104px);line-height:.9;letter-spacing:-.05em;color:var(--ink)}
+    .dzg-head h2 span{color:var(--a)}
+    .dzg-ctl{display:flex;gap:10px;align-items:center;flex:none}
+    .dzg-ar{width:50px;height:50px;border-radius:50%;border:1px solid rgba(11,11,13,.16);background:#fff;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .25s,color .25s,opacity .25s}
+    .dzg-ar:hover{background:var(--ink);color:#fff}
+    .dzg-ar[disabled]{opacity:.3;pointer-events:none}
+    .dzg-all{display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 24px;margin-left:6px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:600;transition:background .25s}
+    .dzg-all:hover{background:var(--a)}
+    .dzg-track{--pad:max(clamp(16px,3vw,40px),calc((100vw - 1360px)/2 + clamp(16px,3vw,40px)));display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:var(--pad);padding:10px var(--pad) 60px;scrollbar-width:none;cursor:grab;user-select:none;-webkit-user-select:none}
+    .dzg-track::-webkit-scrollbar{display:none}
+    .dzg-track.drag{cursor:grabbing;scroll-snap-type:none}
+    .dzg-track.drag .dzg-c{pointer-events:none}
+    .dzg-end{flex:0 0 1px}
+    .dzg-c{position:relative;flex:0 0 clamp(270px,26vw,380px);aspect-ratio:3/4.3;border-radius:26px;overflow:hidden;scroll-snap-align:start;color:#fff;text-decoration:none;isolation:isolate;background:#e9e8e4;box-shadow:0 30px 60px -34px rgba(0,0,0,.5);transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+    .dzg-c:nth-child(even){margin-top:48px}
+    .dzg-c.big{flex-basis:clamp(300px,40vw,580px);aspect-ratio:auto}
+    .dzg-c img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transform:scale(1.02);transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+    .dzg-c:hover img{transform:scale(1.1)}
+    .dzg-c:hover{transform:translateY(-8px)}
+    .dzg-sh{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,0) 30%,rgba(0,0,0,.15) 55%,rgba(0,0,0,.85))}
+    .dzg-top{position:absolute;top:18px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;font:700 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}
+    .dzg-top span{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+    .dzg-bot{position:absolute;left:0;right:0;bottom:0;padding:26px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+    .dzg-flag{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--a);font:700 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase}
+    .dzg-flag i{width:6px;height:6px;border-radius:50%;background:#fff;animation:dzg-p 1.6s infinite}
+    .dzg-t{font-size:clamp(34px,3.4vw,54px);line-height:.9;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.035em}
+    .dzg-c.big .dzg-t{font-size:clamp(48px,5.6vw,96px)}
+    .dzg-p{max-width:40ch;font-size:15px;line-height:1.5;color:rgba(255,255,255,.86)}
+    .dzg-go{display:inline-flex;align-items:center;height:48px;border-radius:999px;background:#fff;color:var(--ink);font-weight:700;overflow:hidden;transition:background .3s,color .3s}
+    .dzg-go span{max-width:0;opacity:0;white-space:nowrap;transition:max-width .5s cubic-bezier(.7,0,.2,1),opacity .3s,padding .5s;padding-left:0}
+    .dzg-go svg{margin:0 15px}
+    .dzg-c:hover .dzg-go{background:var(--a);color:#fff}
+    .dzg-c:hover .dzg-go span,.dzg-c.big .dzg-go span{max-width:160px;opacity:1;padding-left:20px}
+    .dzg-c.big .dzg-go{background:var(--a);color:#fff}
+    .dzg-bar{height:2px;background:rgba(11,11,13,.1);border-radius:2px;overflow:hidden}
+    .dzg-bar i{display:block;height:100%;width:30%;background:var(--ink);transform-origin:left;transition:width .2s}
+    @keyframes dzg-p{50%{opacity:.3}}
+    @media (max-width:989px){
+      .dzg-head{flex-direction:column;align-items:flex-start}
+      .dzg-ar{display:none}
+      .dzg-all{margin-left:0}
+      .dzg-c{flex-basis:76vw}
+      .dzg-c.big{flex-basis:86vw;aspect-ratio:3/4.3}
+      .dzg-c:nth-child(even){margin-top:0}
+      .dzg-go span{max-width:160px;opacity:1;padding-left:20px}
+    }
+    @media (prefers-reduced-motion:reduce){.dzg *{transition:none!important;animation:none!important}}
+  </style>
+  <script>
+    (function(){
+      var s = document.querySelector('[data-dzg]'); if (!s) return;
+      var t = s.querySelector('[data-track]'), bar = s.querySelector('[data-bar]');
+      var prev = s.querySelector('[data-prev]'), next = s.querySelector('[data-next]');
+      function passo(){ var c = t.querySelector('.dzg-c:not(.big)'); return c ? c.offsetWidth + 18 : 300; }
+      var testa = s.querySelector('.dzg-head');
+      function allinea(){ t.style.setProperty('--pad', Math.max(16, testa.getBoundingClientRect().left) + 'px'); }
+      allinea(); addEventListener('resize', allinea);
+      function agg(){
+        var max = t.scrollWidth - t.clientWidth, k = max > 0 ? t.scrollLeft / max : 1;
+        bar.style.width = (t.clientWidth / t.scrollWidth * 100 + k * (100 - t.clientWidth / t.scrollWidth * 100)) + '%';
+        prev.disabled = t.scrollLeft < 4; next.disabled = t.scrollLeft > max - 4;
+      }
+      prev.addEventListener('click', function(){ t.scrollBy({ left: -passo(), behavior: 'smooth' }); });
+      next.addEventListener('click', function(){ t.scrollBy({ left: passo(), behavior: 'smooth' }); });
+      t.addEventListener('scroll', agg, { passive: true }); addEventListener('resize', agg); agg();
+      var giu = false, x0 = 0, s0 = 0, mosso = 0;
+      t.addEventListener('pointerdown', function(e){ if (e.pointerType !== 'mouse') return; giu = true; mosso = 0; x0 = e.clientX; s0 = t.scrollLeft; });
+      addEventListener('pointermove', function(e){
+        if (!giu) return; var d = e.clientX - x0; mosso = Math.max(mosso, Math.abs(d));
+        if (mosso > 6) { t.classList.add('drag'); t.scrollLeft = s0 - d; }
+      });
+      addEventListener('pointerup', function(){
+        if (!giu) return; giu = false;
+        if (t.classList.contains('drag')) { var sl = t.scrollLeft; t.classList.remove('drag'); t.scrollLeft = sl; t.scrollBy({ left: 1, behavior: 'smooth' }); }
+      });
+      t.addEventListener('click', function(e){ if (mosso > 6) { e.preventDefault(); mosso = 0; } }, true);
+    })();
+  </script>
+</section>

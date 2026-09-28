@@ -1,0 +1,118 @@
+{%- comment -%}
+  Categorie, idea "Indice": elenco tipografico a tutta larghezza. I nomi delle
+  discipline sono enormi, uno per riga; passando col mouse la riga scorre, le
+  altre si attenuano e la foto della collezione compare e segue il cursore.
+  Su telefono ogni riga ha la sua miniatura e niente foto che segue.
+{%- endcomment -%}
+{%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
+<section class="dzl" data-dzl>
+  <div class="wrap">
+    <div class="dzl-head">
+      <div>
+        <p class="dzl-k"><i></i>01 — 0{{ bento.size }}</p>
+        <h2>{{ 'home.cat_h' | t }}<span>.</span></h2>
+      </div>
+      <a class="dzl-all" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="dzl-list">
+      {%- assign n = 0 -%}
+      {%- for handle in bento -%}
+        {%- assign c = collections[handle] -%}
+        {%- if c != blank -%}
+          {%- assign n = n | plus: 1 -%}
+          <a class="dzl-r" href="{{ c.url }}" data-i="{{ n | minus: 1 }}">
+            <span class="dzl-n">0{{ n }}</span>
+            <span class="dzl-th">{%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 200 }}" alt="" loading="lazy">{%- endif -%}</span>
+            <span class="dzl-t"><span class="dzl-tt" data-txt="{{ c.title | escape }}">{{ c.title }}</span>{%- if forloop.first -%}<em class="dzl-flag"><i></i>{{ 'home.flag_unici' | t }}</em>{%- endif -%}</span>
+            <span class="dzl-c">{{ 'home.modelli' | t: n: c.products_count }}</span>
+            <span class="dzl-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  <div class="dzl-fig" aria-hidden="true">
+    {%- for handle in bento -%}
+      {%- assign c = collections[handle] -%}
+      {%- if c != blank -%}
+        <span class="dzl-im">{%- if c.featured_image -%}<img src="{{ c.featured_image | image_url: width: 900 }}" alt="" loading="lazy">{%- endif -%}</span>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <style>
+    .dzl{--a:#e4002b;--ink:#0b0b0d;background:#fff;color:var(--ink);padding:clamp(56px,8vw,120px) 0;position:relative;overflow:hidden}
+    .dzl svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .dzl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(28px,4vw,56px)}
+    .dzl-k{display:flex;align-items:center;gap:12px;margin:0 0 16px;font:700 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.26em;text-transform:uppercase;color:var(--a)}
+    .dzl-k i{width:34px;height:2px;background:var(--a)}
+    .dzl-head h2{margin:0;font-size:clamp(40px,6.8vw,104px);line-height:.9;letter-spacing:-.05em;color:var(--ink)}
+    .dzl-head h2 span{color:var(--a)}
+    .dzl-all{display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 24px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:600;flex:none;transition:background .25s}
+    .dzl-all:hover{background:var(--a)}
+    .dzl-list{border-top:1px solid rgba(11,11,13,.12)}
+    .dzl-r{position:relative;display:grid;grid-template-columns:70px 1fr auto 64px;align-items:center;gap:20px;padding:clamp(14px,1.6vw,22px) 0;border-bottom:1px solid rgba(11,11,13,.12);color:var(--ink);text-decoration:none;transition:opacity .4s}
+    .dzl-r:before{content:"";position:absolute;inset:0 -100vw;background:#f4f3f0;transform:scaleY(0);transform-origin:bottom;transition:transform .5s cubic-bezier(.7,0,.2,1);z-index:-1}
+    .dzl-r:hover:before{transform:scaleY(1)}
+    .dzl-list:hover .dzl-r:not(:hover){opacity:.28}
+    .dzl-n{font:700 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;color:rgba(11,11,13,.45)}
+    .dzl-th{display:none}
+    .dzl-t{display:flex;align-items:center;gap:18px;min-width:0}
+    .dzl-tt{position:relative;display:inline-block;font-size:clamp(40px,7.4vw,120px);line-height:.95;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.045em;white-space:nowrap;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+    .dzl-tt:after{content:attr(data-txt);position:absolute;inset:0;color:var(--a);clip-path:inset(0 100% 0 0);transition:clip-path .6s cubic-bezier(.7,0,.2,1)}
+    .dzl-r:hover .dzl-tt{transform:translateX(24px)}
+    .dzl-r:hover .dzl-tt:after{clip-path:inset(0 0 0 0)}
+    .dzl-flag{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--ink);color:#fff;font:700 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;font-style:normal;flex:none}
+    .dzl-flag i{width:7px;height:7px;border-radius:50%;background:var(--a)}
+    .dzl-c{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.18em;text-transform:uppercase;color:rgba(11,11,13,.55);white-space:nowrap}
+    .dzl-go{width:56px;height:56px;border-radius:50%;border:1px solid rgba(11,11,13,.16);display:grid;place-items:center;justify-self:end;transition:background .3s,color .3s,border-color .3s,transform .5s cubic-bezier(.2,.7,.2,1)}
+    .dzl-r:hover .dzl-go{background:var(--a);border-color:var(--a);color:#fff;transform:rotate(45deg)}
+    .dzl-fig{position:absolute;left:0;top:0;width:clamp(260px,24vw,380px);aspect-ratio:4/5;border-radius:22px;overflow:hidden;pointer-events:none;z-index:3;opacity:0;transform:translate3d(var(--x,0),var(--y,0),0) rotate(var(--r,0deg)) scale(.6);transition:opacity .35s,transform .1s linear;box-shadow:0 40px 80px -30px rgba(0,0,0,.55)}
+    .dzl.show .dzl-fig{opacity:1;transform:translate3d(var(--x,0),var(--y,0),0) rotate(var(--r,0deg)) scale(1)}
+    .dzl-im{position:absolute;inset:0;opacity:0;transform:scale(1.15);transition:opacity .45s,transform .9s cubic-bezier(.2,.7,.2,1)}
+    .dzl-im.on{opacity:1;transform:none}
+    .dzl-im img{width:100%;height:100%;object-fit:cover;display:block}
+    @media (max-width:989px){
+      .dzl-head{flex-direction:column;align-items:flex-start}
+      .dzl-r{grid-template-columns:64px 1fr 40px;gap:14px}
+      .dzl-n,.dzl-fig{display:none}
+      .dzl-th{display:block;width:64px;height:64px;border-radius:14px;overflow:hidden;background:#eee}
+      .dzl-th img{width:100%;height:100%;object-fit:cover;display:block}
+      .dzl-t{flex-direction:column;align-items:flex-start;gap:6px}
+      .dzl-t{min-width:0}
+      .dzl-tt{font-size:clamp(24px,7.4vw,44px);white-space:normal}
+      .dzl-c{grid-column:2;grid-row:1;align-self:end;display:none}
+      .dzl-go{width:40px;height:40px}
+      .dzl-flag{padding:5px 9px;font-size:10px}
+    }
+    @media (prefers-reduced-motion:reduce){.dzl *{transition:none!important}}
+  </style>
+  <script>
+    (function(){
+      var s = document.querySelector('[data-dzl]'); if (!s) return;
+      var fig = s.querySelector('.dzl-fig'), ims = s.querySelectorAll('.dzl-im');
+      var fine = matchMedia('(hover: hover) and (min-width: 990px)');
+      var x = 0, y = 0, tx = 0, ty = 0, raf = 0;
+      function giro(){
+        var dx = tx - x; x += dx * .14; y += (ty - y) * .14;
+        fig.style.setProperty('--x', x + 'px'); fig.style.setProperty('--y', y + 'px');
+        fig.style.setProperty('--r', Math.max(-10, Math.min(10, dx * .06)) + 'deg');
+        raf = (Math.abs(dx) > .3 || Math.abs(ty - y) > .3) ? requestAnimationFrame(giro) : 0;
+      }
+      s.addEventListener('mousemove', function(e){
+        if (!fine.matches) return;
+        var r = s.getBoundingClientRect();
+        tx = e.clientX - r.left - fig.offsetWidth / 2; ty = e.clientY - r.top - fig.offsetHeight / 2;
+        if (!s.classList.contains('show')) { x = tx; y = ty; }
+        if (!raf) raf = requestAnimationFrame(giro);
+      });
+      s.querySelectorAll('.dzl-r').forEach(function(r){
+        r.addEventListener('mouseenter', function(){
+          if (!fine.matches) return;
+          ims.forEach(function(im, j){ im.classList.toggle('on', j == r.dataset.i); });
+          s.classList.add('show');
+        });
+      });
+      s.querySelector('.dzl-list').addEventListener('mouseleave', function(){ s.classList.remove('show'); });
+    })();
+  </script>
+</section>
