@@ -1,0 +1,225 @@
+{%- comment -%}
+  Home DZ 2026 — apertura a tutto schermo, marchi, categorie, ultimi arrivi (dalla
+  collezione new-arrivals), usato reale, permuta (solo verso il nuovo), rate.
+  Tutto legge dalle collezioni esistenti: nessun dato inventato.
+{%- endcomment -%}
+
+<section class="dzh">
+  {%- comment -%}
+    Apertura: la foto del gravel a tutto schermo, titolo, pulsanti e numeri
+    (stili in dz-apertura.css). Nessuna animazione.
+    Foto: hero-corsa-nitida.jpg nei File del negozio, 3200px ricampionata e
+    resa piu' nitida dall'originale 1600px; il CDN la serve nella misura adatta
+    allo schermo. Se non si carica, torna la versione del tema.
+  {%- endcomment -%}
+  {%- assign anno_c = 'now' | date: '%Y' -%}
+  {%- assign foto = 'hero-corsa-nitida.jpg' | file_url -%}
+  <div class="dzh-stage">
+    <div class="dzh-foto" aria-hidden="true">
+      <img src="{{ foto }}&width=2400"
+           srcset="{{ foto }}&width=1200 1200w, {{ foto }}&width=1800 1800w, {{ foto }}&width=2400 2400w, {{ foto }} 3200w"
+           sizes="(max-width: 760px) 240vw, 130vw"
+           alt="" width="3200" height="1370" fetchpriority="high"
+           onerror="if(!this.dataset.r){this.dataset.r=1;this.removeAttribute('srcset');this.src='{{ 'hero-corsa.jpg' | asset_url }}'}">
+    </div>
+    <div class="dzh-velo" aria-hidden="true"></div>
+    <div class="wrap dzh-testo">
+      <div class="dzh-su">
+        <p class="dzh-k">{{ 'home.kicker' | t: anno: anno_c }}</p>
+        <h1>{{ 'home.h1a' | t }} <span class="g">{{ 'home.h1b' | t }}</span></h1>
+        <p class="dzh-lede">{{ 'home.lede' | t }}</p>
+      </div>
+      <div class="dzh-giu">
+        <div class="dzh-cta">
+          <a class="btn" href="/collections/tutte-le-bici">{{ 'home.cta_catalogo' | t }}</a>
+          <a class="btn ghost" href="#bike-finder">{{ 'home.cta_finder' | t }}</a>
+          <a class="btn ghost" href="/collections/new-arrivals">{{ 'home.cta_arrivi' | t }}</a>
+        </div>
+        <div class="dzh-num">
+          <div><b>{{ collections['tutte-le-bici'].products_count | default: '350+' }}</b><span>{{ 'home.stat_bici' | t }}</span></div>
+          <div><b>{{ 'home.stat_brand_v' | t }}</b><span>{{ 'home.stat_brand_l' | t }}</span></div>
+          <div><b>{{ 'home.stat_off_v' | t }}</b><span>{{ 'home.stat_off_l' | t }}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    /* menu scuro finche' sotto di lui c'e' l'apertura o la fascia nera dei marchi */
+    (function(){
+      var fascia = document.querySelector('.brands-dark') || document.querySelector('.dzh');
+      var testa = document.querySelector('.dz header'); if (!fascia) return;
+      var att = false;
+      function buio(){
+        att = false;
+        var lim = testa ? testa.getBoundingClientRect().bottom : 66;
+        document.body.classList.toggle('dz-buio', fascia.getBoundingClientRect().bottom > lim);
+      }
+      addEventListener('scroll', function(){ if (!att) { att = true; requestAnimationFrame(buio); } }, { passive: true });
+      buio();
+    })();
+  </script>
+</section>
+
+<section class="brands-dark" data-bd>
+  {%- comment -%}
+    I marchi, stile Apple: banda nera da bordo a bordo, solo i quattro loghi,
+    enormi e in bianco. Si accendono uno dopo l'altro quando la fascia entra
+    nello schermo; un riflesso di luce attraversa ogni logo (il logo e' doppio:
+    la copia sopra viene ritagliata da una fascia che scorre); dietro, un
+    fascio di luce che si muove piano. Nessun testo oltre l'etichetta.
+    I loghi sono i PNG del negozio: invertiti e fusi in "screen" restano
+    bianchi sia con sfondo trasparente sia con sfondo bianco.
+  {%- endcomment -%}
+  {%- comment -%} ultimo campo: scala del logo. Il PNG Amflow (1400x800) ha molta aria attorno: a pari altezza esce piccolo {%- endcomment -%}
+  {%- assign marchi = 'trek|TREK|trek.png|1,scott|SCOTT|scott.png|1,cannondale|CANNONDALE|cnd.png|1,amflow|AMFLOW|amflow.png|1.6' | split: ',' -%}
+  <i class="bd-beam" aria-hidden="true"></i>
+  <div class="wrap">
+    <p class="bd-k">{{ 'home.loghi' | t }}</p>
+    <div class="bd-row">
+      {%- for riga in marchi -%}
+        {%- assign c = riga | split: '|' -%}
+        <a class="bd-cell" href="/pages/{{ c[0] }}" style="--i:{{ forloop.index0 }};--s:{{ c[3] }}">
+          <span class="bd-l">
+            <img class="bd-logo" src="{{ c[2] | file_url }}" alt="{{ c[1] }}" loading="lazy">
+            <img class="bd-logo bd-glint" src="{{ c[2] | file_url }}" alt="" aria-hidden="true" loading="lazy">
+          </span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+  <script>
+    (function(){
+      var s = document.querySelector('[data-bd]'); if (!s) return;
+      s.classList.add('bd-js');
+      if (!('IntersectionObserver' in window)) { s.classList.add('on'); return; }
+      new IntersectionObserver(function(v, io){ if (v[0].isIntersecting) { s.classList.add('on'); io.disconnect(); } }, { threshold: .25 }).observe(s);
+    })();
+  </script>
+</section>
+
+<section class="block wrap after-dark">
+  <div class="head"><div><h2>{{ 'home.cat_h' | t }}</h2></div><a class="more" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}</a></div>
+  <div class="cats">
+    {%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
+    {%- for handle in bento -%}
+      {%- assign c = collections[handle] -%}
+      {%- if c != blank -%}
+        <a class="cat {% if forloop.first %}hero2{% elsif forloop.index == 2 or forloop.index == 3 %}wide{% endif %}" href="{{ c.url }}">
+          {%- if c.featured_image -%}<img class="bg" src="{{ c.featured_image | image_url: width: 900 }}" alt="" loading="lazy">{%- endif -%}
+          <div class="vg"></div>
+          {%- if forloop.first -%}<span class="flag"><i></i>{{ 'home.flag_unici' | t }}</span>{%- endif -%}
+          <div class="lb">
+            <span class="c">{{ 'home.modelli' | t: n: c.products_count }}</span>
+            <h3>{{ c.title }}</h3>
+            {%- if forloop.first -%}<p>{{ 'home.usato_p' | t }}</p>{%- endif -%}
+          </div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<section class="block wrap fullw">
+  <div class="head"><div><p class="k">{{ 'home.arrivi_k' | t }}</p><h2>{{ 'home.arrivi_h' | t }}</h2></div><a class="more" href="/collections/new-arrivals">{{ 'home.vedi_tutte' | t }}</a></div>
+  <div class="prods">
+    {%- assign mostrate = 0 -%}
+    {%- for p in collections['new-arrivals'].products limit: 24 -%}
+      {%- if mostrate < 8 and p.featured_image and p.type != 'USATO' -%}
+        {% render 'dz-card', product: p %}
+        {%- assign mostrate = mostrate | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<section class="block wrap" id="bike-finder" style="padding-top:20px;padding-bottom:20px">
+  {%- comment -%}
+    Copertina ridisegnata: niente foto (cover trasparente), veste identica
+    alla scheda finanziamento, card in vetro aggiunta a destra.
+  {%- endcomment -%}
+  <div class="dz-finder">
+    {% render 'bike-finder-app', whatsapp: '393457815102' %}
+    <div class="dz-findercard" aria-hidden="true">
+      <span class="fc-k">{{ 'home.fc_k' | t }}</span>
+      <div class="fc-row"><span>{{ 'home.fc_domande' | t }}</span><b>3</b></div>
+      <div class="fc-row"><span>{{ 'home.fc_tempo' | t }}</span><b>{{ 'home.fc_tempo_v' | t }}</b></div>
+      <div class="fc-big"><b>{{ 'home.fc_bici' | t }}</b><span>{{ 'home.fc_misura' | t }}</span></div>
+      <div class="fc-bar"><i></i></div>
+      <div class="fc-legend"><span>{{ 'home.fc_cat' | t }}</span><span>{{ 'home.fc_taglia' | t }}</span></div>
+      <p class="fc-note">{{ 'home.fc_note' | t }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="block wrap fullw">
+  <div class="head"><div><p class="k">{{ 'home.usato_k' | t }}</p><h2>{{ 'home.usato_h' | t }}</h2></div><a class="more" href="/collections/usato-1">{{ 'home.usato_all' | t }}</a></div>
+  <div class="prods">
+    {%- for p in collections['usato-1'].products limit: 4 -%}
+      {% render 'dz-card', product: p %}
+    {%- endfor -%}
+  </div>
+</section>
+
+<section class="block wrap fullw" style="padding-top:40px">
+  <div class="head"><div><p class="k">{{ 'home.sv_k' | t }}</p><h2>{{ 'home.sv_h' | t }}</h2></div><a class="more" href="/pages/service">{{ 'home.sv_all' | t }}</a></div>
+  <div class="svcbig">
+    <a class="sb" href="/pages/service">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4L15 12l-3-3z"/></svg></span>
+      <h3>{{ 'home.sv1_t' | t }}</h3>
+      <p>{{ 'home.sv1_p' | t }}</p>
+      <span class="go">{{ 'home.scopri' | t }}</span>
+    </a>
+    <a class="sb" href="/pages/permuta-il-tuo-usato">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></span>
+      <h3>{{ 'home.sv2_t' | t }}</h3>
+      <p>{{ 'home.sv2_p' | t }}</p>
+      <span class="go">{{ 'home.scopri' | t }}</span>
+    </a>
+    <a class="sb" href="/pages/finanziamenti-agevolati">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M4 10h16"/></svg></span>
+      <h3>{{ 'home.sv3_t' | t }}</h3>
+      <p>{{ 'home.sv3_p' | t }}</p>
+      <span class="go">{{ 'home.scopri' | t }}</span>
+    </a>
+    <a class="sb" href="/pages/contact">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6.5" cy="16.5" r="3.4"/><circle cx="17.5" cy="16.5" r="3.4"/><path d="M6.5 16.5l5-8h4l2 8M11.5 8.5l-1.5-3h3.5"/></svg></span>
+      <h3>{{ 'home.sv4_t' | t }}</h3>
+      <p>{{ 'home.sv4_p' | t }}</p>
+      <span class="go">{{ 'home.scopri' | t }}</span>
+    </a>
+  </div>
+</section>
+
+{% section 'dz-permuta' %}
+
+<section class="block wrap"><div class="fin">
+  <div class="fin-l">
+    <p class="k">{{ 'home.fin_k' | t }}</p>
+    <h2>{{ 'home.fin_h' | t }}</h2>
+    <p>{{ 'home.fin_p' | t }}</p>
+    <a class="btn" style="background:#fff;color:var(--ink)" href="/pages/finanziamenti-agevolati">{{ 'home.fin_cta' | t }}</a>
+  </div>
+  <div class="fin-r"><div class="fin-card">
+    <span class="fc-k">{{ 'home.fin_es' | t }}</span>
+    <div class="fc-row"><span>{{ 'home.fin_importo' | t }}</span><b>€ 4.199</b></div>
+    <div class="fc-row"><span>{{ 'home.fin_durata' | t }}</span><b>{{ 'home.fin_48' | t }}</b></div>
+    <div class="fc-big"><b>€ 100</b><span>{{ 'home.mese' | t }}</span></div>
+    <div class="fc-bar"><i></i></div>
+    <div class="fc-legend"><span>{{ 'home.fin_6' | t }}</span><span>{{ 'home.fin_60' | t }}</span></div>
+    <p class="fc-note">{{ 'home.fin_note' | t }}</p>
+  </div></div>
+</div></section>
+
+<section class="block wrap" style="padding-bottom:30px"><div class="news">
+  <h2>{{ 'home.news_h' | t }}</h2>
+  <p>{{ 'home.news_p' | t }}</p>
+  {%- form 'customer', class: 'nform' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    {%- if form.posted_successfully? -%}
+      <p style="color:var(--ok);font-weight:600;width:100%">{{ 'home.news_ok' | t }}</p>
+    {%- else -%}
+      <input type="email" name="contact[email]" placeholder="{{ 'home.news_ph' | t }}" aria-label="{{ 'home.news_ph' | t }}" required>
+      <button class="btn" type="submit">{{ 'home.news_btn' | t }}</button>
+    {%- endif -%}
+  {%- endform -%}
+</div></section>
