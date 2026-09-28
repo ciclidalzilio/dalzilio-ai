@@ -97,27 +97,8 @@
   </script>
 </section>
 
-<section class="block wrap after-dark">
-  <div class="head"><div><h2>{{ 'home.cat_h' | t }}</h2></div><a class="more" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}</a></div>
-  <div class="cats">
-    {%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
-    {%- for handle in bento -%}
-      {%- assign c = collections[handle] -%}
-      {%- if c != blank -%}
-        <a class="cat {% if forloop.first %}hero2{% elsif forloop.index == 2 or forloop.index == 3 %}wide{% endif %}" href="{{ c.url }}">
-          {%- if c.featured_image -%}<img class="bg" src="{{ c.featured_image | image_url: width: 900 }}" alt="" loading="lazy">{%- endif -%}
-          <div class="vg"></div>
-          {%- if forloop.first -%}<span class="flag"><i></i>{{ 'home.flag_unici' | t }}</span>{%- endif -%}
-          <div class="lb">
-            <span class="c">{{ 'home.modelli' | t: n: c.products_count }}</span>
-            <h3>{{ c.title }}</h3>
-            {%- if forloop.first -%}<p>{{ 'home.usato_p' | t }}</p>{%- endif -%}
-          </div>
-        </a>
-      {%- endif -%}
-    {%- endfor -%}
-  </div>
-</section>
+{%- comment -%} Categorie: pannelli espandibili (snippets/dz-discipline.liquid) {%- endcomment -%}
+{% render 'dz-discipline' %}
 
 <section class="block wrap fullw">
   <div class="head"><div><p class="k">{{ 'home.arrivi_k' | t }}</p><h2>{{ 'home.arrivi_h' | t }}</h2></div><a class="more" href="/collections/new-arrivals">{{ 'home.vedi_tutte' | t }}</a></div>
