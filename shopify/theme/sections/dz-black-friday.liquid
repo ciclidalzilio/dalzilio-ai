@@ -1,16 +1,16 @@
 {%- comment -%}
-  Home Black Friday. Tutti i numeri vengono dai prodotti veri della
-  collezione scelta (di default "promozioni"): si contano solo i prodotti
-  disponibili con prezzo barrato piu' alto del prezzo, lo sconto e' calcolato
-  sulla stessa variante (arrotondato per difetto, mai gonfiato).
-  1. Apertura nera: "fino al -X%" (lo sconto piu' alto vero), conto alla
-     rovescia alla data di fine, pulsanti; a destra l'offerta piu' scontata.
-  2. Nastro rosso che scorre.
-  3. "Le piu' scontate": prodotti in ordine esatto di sconto (elenco
-     "sconto-inverso-indice" ordinato), senza doppioni per titolo.
-  4. Scegli il budget: scorciatoie per fascia di prezzo (filtro prezzo).
-  5. Altre offerte + pulsante a tutta la collezione.
-  Testi, collezione, data di fine e sconto minimo si cambiano dall'editor.
+  Home Black Friday, nella veste attuale del sito: stessa apertura a tutto
+  schermo della home (classi .dzh di dz-apertura.css), stesse intestazioni
+  (.block .head), stesse card prodotto (dz-card) e stessi riquadri dei
+  servizi (.svcbig .sb) per il budget. Si aggiungono solo: testi Black
+  Friday, numeri veri nell'apertura (sconto massimo, numero offerte, conto
+  alla rovescia) e un nastro che scorre.
+
+  Tutti i numeri vengono dai prodotti della collezione scelta (di default
+  "promozioni"): contano solo i prodotti disponibili con prezzo barrato piu'
+  alto del prezzo; lo sconto e' calcolato sulla stessa variante, arrotondato
+  per difetto. Le offerte sono in ordine esatto di sconto (elenco
+  "sconto-inverso-indice" ordinato), senza doppioni per titolo.
 {%- endcomment -%}
 {%- liquid
   assign col = section.settings.collection
@@ -37,68 +37,139 @@
   {%- endif -%}
 {%- endfor -%}
 {%- assign ordinati = ordine | split: ',' | sort -%}
+{%- if section.settings.image != blank -%}
+  {%- assign foto = section.settings.image | image_url: width: 3200 -%}
+{%- else -%}
+  {%- assign foto = 'hero-corsa-nitida.jpg' | file_url -%}
+{%- endif -%}
 
-<section class="dzbf" data-dzbf>
-  <div class="dzbf-hero" data-bf-hero>
-    <div class="dzbf-noise" aria-hidden="true"></div>
-    <div class="wrap dzbf-in">
-      <div class="dzbf-l">
-      <p class="dzbf-k"><i></i>{{ section.settings.kicker }}</p>
-      <h1 class="dzbf-h"><span class="o">{{ section.settings.title_1 }}</span><span class="f">{{ section.settings.title_2 }}</span></h1>
-      {%- if maxpct > 0 -%}
-        <p class="dzbf-max"><span>{{ section.settings.upto }}</span><b>-{{ maxpct }}%</b></p>
-        <p class="dzbf-sub">{{ section.settings.subtitle | replace: '[n]', nofferte }}</p>
-      {%- else -%}
-        <p class="dzbf-sub">{{ section.settings.empty_text }}</p>
-      {%- endif -%}
-      {%- if section.settings.end_date != blank -%}
-        <div class="dzbf-cd" data-end="{{ section.settings.end_date }}" aria-label="{{ section.settings.countdown_label }}">
-          <span class="dzbf-cdl">{{ section.settings.countdown_label }}</span>
-          <div class="dzbf-cdn">
-            <div><b data-u="d">--</b><span>giorni</span></div>
-            <div><b data-u="h">--</b><span>ore</span></div>
-            <div><b data-u="m">--</b><span>min</span></div>
-            <div><b data-u="s">--</b><span>sec</span></div>
-          </div>
+<section class="dzh dzbf" data-dzbf>
+  <div class="dzh-stage">
+    <div class="dzh-foto" aria-hidden="true">
+      <img src="{{ foto }}&width=2400"
+           srcset="{{ foto }}&width=1200 1200w, {{ foto }}&width=1800 1800w, {{ foto }}&width=2400 2400w, {{ foto }} 3200w"
+           sizes="(max-width: 760px) 240vw, 130vw"
+           alt="" width="3200" height="1370" fetchpriority="high"
+           onerror="if(!this.dataset.r){this.dataset.r=1;this.removeAttribute('srcset');this.src='{{ 'hero-corsa.jpg' | asset_url }}'}">
+    </div>
+    <div class="dzh-velo" aria-hidden="true"></div>
+    <div class="wrap dzh-testo">
+      <div class="dzh-su">
+        <p class="dzh-k dzbf-k"><i></i>{{ section.settings.kicker }}</p>
+        <h1>{{ section.settings.title }} <span class="g">{% if maxpct > 0 %}{{ section.settings.upto }} -{{ maxpct }}%.{% else %}{{ section.settings.empty_title }}{% endif %}</span></h1>
+        <p class="dzh-lede">{% if maxpct > 0 %}{{ section.settings.subtitle | replace: '[n]', nofferte }}{% else %}{{ section.settings.empty_text }}{% endif %}</p>
+      </div>
+      <div class="dzh-giu">
+        <div class="dzh-cta">
+          <a class="btn" href="{% if maxpct > 0 %}#offerte{% else %}{{ col.url }}{% endif %}">{{ section.settings.cta }}</a>
+          {%- if maxpct > 0 -%}<a class="btn ghost" href="#budget">{{ section.settings.cta_budget }}</a>{%- endif -%}
+          <a class="btn ghost" href="{{ section.settings.cta2_link | default: '/pages/finanziamenti-agevolati' }}">{{ section.settings.cta2 }}</a>
         </div>
-      {%- endif -%}
-      <div class="dzbf-cta">
-        <a class="dzbf-btn" href="{{ col.url }}">{{ section.settings.cta }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        {%- if section.settings.cta2 != blank -%}<a class="dzbf-btn ghost" href="{{ section.settings.cta2_link | default: '/pages/finanziamenti-agevolati' }}">{{ section.settings.cta2 }}</a>{%- endif -%}
+        {%- if maxpct > 0 -%}
+          <div class="dzh-num">
+            <div><b class="dzbf-r">-{{ maxpct }}%</b><span>{{ section.settings.stat_max }}</span></div>
+            <div><b>{{ nofferte }}</b><span>{{ section.settings.stat_n }}</span></div>
+            {%- if section.settings.end_date != blank -%}
+              <div class="dzbf-cdw" data-end="{{ section.settings.end_date }}"><b data-cd>&nbsp;</b><span>{{ section.settings.stat_cd }}</span></div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       </div>
-      </div>
-      {%- if ordinati.size > 0 -%}
-        {%- assign idx = ordinati.first | split: '-' | last | plus: 0 -%}
-        {%- assign sp = col.products[idx] -%}
-        {%- assign sv = sp.selected_or_first_available_variant -%}
-        {%- assign seen = seen | append: sp.title | append: '|' -%}
-        {%- assign spct = sv.compare_at_price | minus: sv.price | times: 100 | divided_by: sv.compare_at_price -%}
-        {%- assign simg = sv.featured_image | default: sp.featured_image -%}
-        <a class="dzbf-spot" href="{{ sp.url }}">
-          <span class="dzbf-spk">{{ section.settings.spot_label }}</span>
-          <span class="dzbf-spi">{%- if simg -%}<img src="{{ simg | image_url: width: 900 }}" alt="{{ sp.title | escape }}" loading="eager">{%- endif -%}</span>
-          <span class="dzbf-spp">-{{ spct }}%</span>
-          <span class="dzbf-spv">{{ sp.vendor }}</span>
-          <span class="dzbf-spt">{{ sp.title }}</span>
-          <span class="dzbf-spr"><b>{{ sv.price | money_without_trailing_zeros }}</b><s>{{ sv.compare_at_price | money_without_trailing_zeros }}</s></span>
-        </a>
-      {%- endif -%}
     </div>
   </div>
-
   {%- if maxpct > 0 -%}
     <div class="dzbf-tick" aria-hidden="true"><div class="dzbf-tr">
-      {%- for i in (1..8) -%}<span>{{ section.settings.title_1 }} {{ section.settings.title_2 }}</span><i>✦</i><span>{{ section.settings.upto }} -{{ maxpct }}%</span><i>✦</i>{%- endfor -%}
+      {%- for i in (1..10) -%}<span>{{ section.settings.tick }}</span><i></i><span>{{ section.settings.upto }} -{{ maxpct }}%</span><i></i>{%- endfor -%}
     </div></div>
+  {%- endif -%}
+  <script>
+    /* menu scuro finche' sotto di lui c'e' l'apertura nera (col nastro); qui la
+       fascia marchi viene dopo le offerte, quindi non conta */
+    (function(){
+      var fascia = document.querySelector('[data-dzbf]');
+      var testa = document.querySelector('.dz header'); if (!fascia) return;
+      var att = false;
+      function buio(){
+        att = false;
+        var lim = testa ? testa.getBoundingClientRect().bottom : 66;
+        document.body.classList.toggle('dz-buio', fascia.getBoundingClientRect().bottom > lim);
+      }
+      addEventListener('scroll', function(){ if (!att) { att = true; requestAnimationFrame(buio); } }, { passive: true });
+      buio();
+    })();
+    /* conto alla rovescia: "12g 05h 32m 10s" (solo giorni e ore sul telefono), sparisce a offerte finite */
+    (function(){
+      var w = document.querySelector('[data-dzbf] [data-end]'); if (!w) return;
+      var b = w.querySelector('[data-cd]'), fine = new Date(w.dataset.end).getTime();
+      if (isNaN(fine)) { w.remove(); return; }
+      function due(n){ return (n < 10 ? '0' : '') + n; }
+      function tic(){
+        var r = Math.floor((fine - Date.now()) / 1000);
+        if (r <= 0) { w.remove(); return; }
+        var g = Math.floor(r / 86400) + 'g ' + due(Math.floor(r % 86400 / 3600)) + 'h';
+        b.textContent = innerWidth < 760 ? g : g + ' ' + due(Math.floor(r % 3600 / 60)) + 'm ' + due(r % 60) + 's';
+        setTimeout(tic, 1000);
+      }
+      tic();
+    })();
+  </script>
+</section>
 
-    <div class="block wrap dzbf-sec">
-      <div class="head"><div><p class="k">{{ section.settings.top_k }}</p><h2>{{ section.settings.top_h }}</h2></div><a class="more" href="{{ col.url }}">{{ section.settings.all_label | replace: '[n]', nofferte }}</a></div>
-      <div class="dzbf-grid">
+{%- if maxpct > 0 -%}
+  <section class="block wrap fullw" id="offerte" style="padding-top:64px;padding-bottom:20px">
+    <div class="head"><div><p class="k">{{ section.settings.top_k }}</p><h2>{{ section.settings.top_h }}</h2></div><a class="more" href="{{ col.url }}">{{ section.settings.all_label | replace: '[n]', nofferte }}</a></div>
+    <div class="prods">
+      {%- liquid
+        assign mostrati = 0
+        assign quanti = section.settings.top_count | default: 8
+        for k in ordinati
+          if mostrati >= quanti
+            break
+          endif
+          assign idx = k | split: '-' | last | plus: 0
+          assign p = col.products[idx]
+          assign chiave = '|' | append: p.title | append: '|'
+          unless seen contains chiave
+            assign seen = seen | append: p.title | append: '|'
+            render 'dz-card', product: p
+            assign mostrati = mostrati | plus: 1
+          endunless
+        endfor
+      -%}
+    </div>
+  </section>
+
+  <section class="block wrap fullw" id="budget" style="padding-top:56px;padding-bottom:20px">
+    <div class="head"><div><p class="k">{{ section.settings.bud_k }}</p><h2>{{ section.settings.bud_h }}</h2></div></div>
+    <div class="svcbig">
+      <a class="sb" href="{{ col.url }}?filter.v.price.lte=1000">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>
+        <h3>{{ section.settings.bud_1 }} € 1.000</h3><p>{{ section.settings.bud_1p }}</p><span class="go">{{ section.settings.bud_go }}</span>
+      </a>
+      <a class="sb" href="{{ col.url }}?filter.v.price.gte=1000&filter.v.price.lte=3000">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6.5" cy="16.5" r="3.4"/><circle cx="17.5" cy="16.5" r="3.4"/><path d="M6.5 16.5l5-8h4l2 8M11.5 8.5l-1.5-3h3.5"/></svg></span>
+        <h3>€ 1.000 – 3.000</h3><p>{{ section.settings.bud_2p }}</p><span class="go">{{ section.settings.bud_go }}</span>
+      </a>
+      <a class="sb" href="{{ col.url }}?filter.v.price.gte=3000&filter.v.price.lte=5000">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>
+        <h3>€ 3.000 – 5.000</h3><p>{{ section.settings.bud_3p }}</p><span class="go">{{ section.settings.bud_go }}</span>
+      </a>
+      <a class="sb" href="{{ col.url }}?filter.v.price.gte=5000">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg></span>
+        <h3>{{ section.settings.bud_4 }} € 5.000</h3><p>{{ section.settings.bud_4p }}</p><span class="go">{{ section.settings.bud_go }}</span>
+      </a>
+    </div>
+  </section>
+
+  {%- if nofferte > mostrati -%}
+    <section class="block wrap fullw" style="padding-top:64px;padding-bottom:40px">
+      <div class="head"><div><p class="k">{{ section.settings.more_k }}</p><h2>{{ section.settings.more_h }}</h2></div><a class="more" href="{{ col.url }}">{{ section.settings.all_label | replace: '[n]', nofferte }}</a></div>
+      <div class="prods">
         {%- liquid
-          assign mostrati = 0
-          assign quanti = section.settings.top_count | default: 8
+          assign altri = 0
+          assign quanti2 = section.settings.more_count | default: 12
           for k in ordinati
-            if mostrati >= quanti
+            if altri >= quanti2
               break
             endif
             assign idx = k | split: '-' | last | plus: 0
@@ -106,199 +177,65 @@
             assign chiave = '|' | append: p.title | append: '|'
             unless seen contains chiave
               assign seen = seen | append: p.title | append: '|'
-              assign v = p.selected_or_first_available_variant
-              assign pct = v.compare_at_price | minus: v.price | times: 100 | divided_by: v.compare_at_price
-              render 'dz-bf-card', product: p, variant: v, pct: pct, top: true
-              assign mostrati = mostrati | plus: 1
+              render 'dz-card', product: p
+              assign altri = altri | plus: 1
             endunless
           endfor
         -%}
       </div>
-    </div>
-
-    <div class="block wrap dzbf-sec dzbf-bud">
-      <div class="head"><div><p class="k">{{ section.settings.bud_k }}</p><h2>{{ section.settings.bud_h }}</h2></div></div>
-      <div class="dzbf-bgrid">
-        <a href="{{ col.url }}?filter.v.price.lte=1000"><span>{{ section.settings.bud_1 }}</span><b>€ 1.000</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="{{ col.url }}?filter.v.price.gte=1000&filter.v.price.lte=3000"><span>{{ section.settings.bud_2 }}</span><b>€ 1.000 – 3.000</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="{{ col.url }}?filter.v.price.gte=3000&filter.v.price.lte=5000"><span>{{ section.settings.bud_2 }}</span><b>€ 3.000 – 5.000</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="{{ col.url }}?filter.v.price.gte=5000"><span>{{ section.settings.bud_3 }}</span><b>€ 5.000</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-    </div>
-
-    {%- if nofferte > mostrati -%}
-      <div class="block wrap dzbf-sec">
-        <div class="head"><div><p class="k">{{ section.settings.more_k }}</p><h2>{{ section.settings.more_h }}</h2></div></div>
-        <div class="dzbf-grid">
-          {%- liquid
-            assign altri = 0
-            assign quanti2 = section.settings.more_count | default: 12
-            for k in ordinati
-              if altri >= quanti2
-                break
-              endif
-              assign idx = k | split: '-' | last | plus: 0
-              assign p = col.products[idx]
-              assign chiave = '|' | append: p.title | append: '|'
-              unless seen contains chiave
-                assign seen = seen | append: p.title | append: '|'
-                assign v = p.selected_or_first_available_variant
-                assign pct = v.compare_at_price | minus: v.price | times: 100 | divided_by: v.compare_at_price
-                render 'dz-bf-card', product: p, variant: v, pct: pct, top: false
-                assign altri = altri | plus: 1
-              endunless
-            endfor
-          -%}
-        </div>
-        <div class="dzbf-all"><a class="dzbf-btn dark" href="{{ col.url }}">{{ section.settings.all_label | replace: '[n]', nofferte }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-      </div>
-    {%- endif -%}
+    </section>
   {%- endif -%}
-
-  <style>
-    .dzbf{--a:#ff1f3d;--ink:#0a0a0a}
-    .dzbf svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .dzbf-hero{position:relative;overflow:hidden;background:radial-gradient(900px 500px at 80% 20%,rgba(255,31,61,.35),transparent 60%),radial-gradient(700px 500px at 0% 100%,rgba(255,31,61,.18),transparent 60%),#050505;color:#fff;padding:clamp(130px,16vw,190px) 0 clamp(60px,8vw,110px)}
-    .dzbf-noise{position:absolute;inset:0;opacity:.07;background-image:repeating-linear-gradient(115deg,#fff 0 1px,transparent 1px 7px);pointer-events:none}
-    .dzbf-in{position:relative;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.9fr);gap:clamp(30px,4vw,70px);align-items:center}
-    .dzbf-spot{position:relative;display:flex;flex-direction:column;gap:6px;padding:22px 24px 26px;border-radius:26px;background:#fff;color:var(--ink);text-decoration:none;transform:rotate(2.5deg);box-shadow:0 40px 90px -30px rgba(255,31,61,.55),0 0 0 1px rgba(255,255,255,.1);transition:transform .4s}
-    .dzbf-spot:hover{transform:rotate(0) scale(1.02)}
-    .dzbf-spk{align-self:flex-start;padding:7px 12px;border-radius:999px;background:var(--ink);color:#fff;font:700 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;text-transform:uppercase}
-    .dzbf-spi{display:block;aspect-ratio:4/3;margin:6px -6px 4px}
-    .dzbf-spi img{width:100%;height:100%;object-fit:contain}
-    .dzbf-spp{position:absolute;top:-26px;right:-18px;display:grid;place-items:center;width:clamp(110px,10vw,150px);aspect-ratio:1;border-radius:50%;background:var(--a);color:#fff;font-weight:900;font-size:clamp(30px,3vw,44px);letter-spacing:-.04em;transform:rotate(-12deg);box-shadow:0 16px 40px -10px rgba(255,31,61,.9);animation:dzbf-b 2.4s ease-in-out infinite}
-    .dzbf-spv{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#888}
-    .dzbf-spt{font-size:clamp(20px,1.8vw,26px);font-weight:800;letter-spacing:-.02em;line-height:1.15}
-    .dzbf-spr{display:flex;align-items:baseline;gap:12px;margin-top:4px}
-    .dzbf-spr b{font-size:clamp(28px,2.6vw,38px);font-weight:900;letter-spacing:-.03em;color:var(--a)}
-    .dzbf-spr s{font-size:17px;color:#999}
-    @keyframes dzbf-b{50%{transform:rotate(-6deg) scale(1.06)}}
-    .dzbf-k{display:flex;align-items:center;gap:12px;margin:0 0 18px;font:700 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.3em;text-transform:uppercase;color:var(--a)}
-    .dzbf-k i{width:10px;height:10px;border-radius:50%;background:var(--a);box-shadow:0 0 0 0 var(--a);animation:dzbf-p 1.4s infinite}
-    .dzbf-h{margin:0;display:flex;flex-direction:column;line-height:.82;font-weight:900;letter-spacing:-.05em;text-transform:uppercase;font-size:clamp(64px,11.5vw,190px)}
-    .dzbf-h .o{color:transparent;-webkit-text-stroke:2px #fff}
-    .dzbf-h .f{color:#fff}
-    .dzbf-max{margin:clamp(18px,2.4vw,30px) 0 0;display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 18px;font-weight:900;text-transform:uppercase}
-    .dzbf-max span{font-size:clamp(20px,2.6vw,38px);letter-spacing:-.01em}
-    .dzbf-max b{font-size:clamp(80px,10.5vw,170px);line-height:.85;letter-spacing:-.06em;color:var(--a);text-shadow:0 0 60px rgba(255,31,61,.45)}
-    .dzbf-sub{margin:16px 0 0;max-width:52ch;font-size:clamp(16px,1.4vw,20px);line-height:1.5;color:rgba(255,255,255,.78)}
-    .dzbf-cd{margin-top:clamp(26px,3vw,40px)}
-    .dzbf-cdl{display:block;margin-bottom:12px;font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.6)}
-    .dzbf-cdn{display:flex;gap:10px}
-    .dzbf-cdn div{min-width:clamp(70px,7vw,100px);padding:14px 10px 12px;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(255,255,255,.05);text-align:center}
-    .dzbf-cdn b{display:block;font:800 clamp(30px,3.4vw,50px)/1 ui-monospace,Menlo,monospace;letter-spacing:-.04em}
-    .dzbf-cdn span{display:block;margin-top:6px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55)}
-    .dzbf-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(26px,3vw,40px)}
-    .dzbf-btn{display:inline-flex;align-items:center;gap:12px;height:58px;padding:0 30px;border-radius:999px;background:var(--a);color:#fff;text-decoration:none;font-weight:800;font-size:16px;letter-spacing:.02em;text-transform:uppercase;box-shadow:0 14px 40px -12px rgba(255,31,61,.8);transition:transform .2s,background .2s}
-    .dzbf-btn:hover{transform:translateY(-2px);background:#ff3b55}
-    .dzbf-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.35);box-shadow:none}
-    .dzbf-btn.ghost:hover{background:#fff;color:#000}
-    .dzbf-btn.dark{background:var(--ink);box-shadow:none}
-    .dzbf-btn.dark:hover{background:var(--a)}
-    .dzbf-tick{overflow:hidden;background:var(--a);color:#fff;padding:14px 0;transform:rotate(-1.2deg);margin:-12px -10px 0;position:relative;z-index:2}
-    .dzbf-tr{display:flex;gap:28px;width:max-content;animation:dzbf-m 28s linear infinite;font-weight:900;font-size:clamp(18px,2vw,26px);letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
-    .dzbf-tr i{font-style:normal;opacity:.7}
-    .dzbf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-    .dzbf-bgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .dzbf-bgrid a{display:flex;flex-direction:column;gap:6px;position:relative;padding:24px 24px 26px;border-radius:18px;background:var(--ink);color:#fff;text-decoration:none;overflow:hidden;transition:transform .25s,background .25s}
-    .dzbf-bgrid a:hover{transform:translateY(-3px);background:var(--a)}
-    .dzbf-bgrid span{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.65)}
-    .dzbf-bgrid b{font-size:clamp(24px,2.2vw,34px);font-weight:900;letter-spacing:-.03em}
-    .dzbf-bgrid svg{position:absolute;right:20px;top:22px;width:22px;height:22px}
-    .dzbf-all{display:flex;justify-content:center;margin-top:34px}
-    .dzbc{display:flex;flex-direction:column;border-radius:18px;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,.08);color:#0a0a0a;text-decoration:none;transition:transform .25s,box-shadow .25s}
-    .dzbc:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(0,0,0,.35)}
-    .dzbc-ph{position:relative;display:block;aspect-ratio:4/3;background:#f4f4f4;overflow:hidden}
-    .dzbc-ph img{width:100%;height:100%;object-fit:contain;padding:8%;box-sizing:border-box;transition:transform .5s}
-    .dzbc:hover .dzbc-ph img{transform:scale(1.05)}
-    .dzbc-pct{position:absolute;top:12px;left:12px;padding:8px 12px 7px;border-radius:12px;background:#ff1f3d;color:#fff;font-weight:900;font-size:22px;line-height:1;letter-spacing:-.03em;transform:rotate(-4deg)}
-    .dzbc-pct small{font-size:.6em}
-    .dzbc.top .dzbc-pct{font-size:clamp(28px,2.6vw,38px);padding:10px 14px 9px;box-shadow:0 10px 24px -8px rgba(255,31,61,.8)}
-    .dzbc-b{display:flex;flex-direction:column;gap:4px;padding:14px 16px 18px}
-    .dzbc-v{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#888}
-    .dzbc-t{font-size:16px;font-weight:700;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
-    .dzbc-pr{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin-top:6px}
-    .dzbc-pr b{font-size:22px;font-weight:900;letter-spacing:-.02em;color:#ff1f3d}
-    .dzbc-pr s{font-size:14px;color:#999}
-    .dzbc-r{align-self:flex-start;margin-top:6px;padding:4px 9px;border-radius:6px;background:#0a0a0a;color:#fff;font-size:12px;font-weight:700}
-    @media (max-width:989px){
-      .dzbc{border-radius:14px}
-      .dzbc-pct{top:8px;left:8px;font-size:17px;padding:6px 9px 5px}
-      .dzbc.top .dzbc-pct{font-size:22px}
-      .dzbc-b{padding:10px 12px 14px}
-      .dzbc-t{font-size:14px}
-      .dzbc-pr b{font-size:18px}
-      .dzbc-pr s{font-size:12px}
-      .dzbc-r{font-size:11px}
-    }
-    @keyframes dzbf-m{to{transform:translateX(-50%)}}
-    @keyframes dzbf-p{70%{box-shadow:0 0 0 10px rgba(255,31,61,0)}100%{box-shadow:0 0 0 0 rgba(255,31,61,0)}}
-    @media (max-width:989px){
-      .dzbf-in{grid-template-columns:minmax(0,1fr)}
-      .dzbf-spot{transform:none;margin:30px 10px 0}
-      .dzbf-spp{top:-20px;right:-8px}
-      .dzbf-grid{grid-template-columns:repeat(2,1fr);gap:10px}
-      .dzbf-bgrid{grid-template-columns:repeat(2,1fr);gap:10px}
-      .dzbf-bgrid a{padding:18px}
-      .dzbf-h .o{-webkit-text-stroke:1.5px #fff}
-      .dzbf-cdn{gap:6px}
-      .dzbf-cdn div{flex:1;min-width:0;padding:10px 4px}
-      .dzbf-btn{height:52px;padding:0 22px;font-size:14px}
-    }
-    @media (prefers-reduced-motion:reduce){.dzbf *{animation:none!important}}
-  </style>
-  <script>
-    (function(){
-      var s = document.querySelector('[data-dzbf]'); if (!s) return;
-      /* menu scuro finche' sotto di lui c'e' l'apertura nera */
-      var hero = s.querySelector('[data-bf-hero]'), testa = document.querySelector('.dz header'), att = false;
-      function buio(){ att = false; var lim = testa ? testa.getBoundingClientRect().bottom : 66; document.body.classList.toggle('dz-buio', hero.getBoundingClientRect().bottom > lim); }
-      addEventListener('scroll', function(){ if (!att) { att = true; requestAnimationFrame(buio); } }, { passive: true }); buio();
-      /* conto alla rovescia */
-      var cd = s.querySelector('[data-end]'); if (!cd) return;
-      var fine = new Date(cd.dataset.end).getTime();
-      if (isNaN(fine)) { cd.style.display = 'none'; return; }
-      var u = {}; cd.querySelectorAll('[data-u]').forEach(function(b){ u[b.dataset.u] = b; });
-      function due(n){ return (n < 10 ? '0' : '') + n; }
-      function tic(){
-        var r = Math.max(0, Math.floor((fine - Date.now()) / 1000));
-        if (r === 0) { cd.style.display = 'none'; return; }
-        u.d.textContent = due(Math.floor(r / 86400)); u.h.textContent = due(Math.floor(r % 86400 / 3600));
-        u.m.textContent = due(Math.floor(r % 3600 / 60)); u.s.textContent = due(r % 60);
-        setTimeout(tic, 1000);
-      }
-      tic();
-    })();
-  </script>
-</section>
+{%- endif -%}
 {%- endpaginate -%}
+
+<style>
+  .dzbf .dzbf-k{display:flex;align-items:center;gap:10px;color:#ff5c85}
+  .dzbf .dzbf-k i{width:8px;height:8px;border-radius:50%;background:var(--rose,#ff2e63);animation:dzbf-p 1.6s infinite}
+  .dzbf .dzbf-r{color:#ff5c85}
+  .dzbf .dzbf-cdw b{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .dzbf-tick{position:relative;z-index:2;overflow:hidden;background:#000;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);padding:14px 0}
+  .dzbf-tr{display:flex;align-items:center;gap:26px;width:max-content;animation:dzbf-m 40s linear infinite;font-family:"Archivo",var(--font-sans);font-stretch:118%;font-size:13px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap}
+  .dzbf-tr span:nth-of-type(even){color:#ff5c85}
+  .dzbf-tr i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.4)}
+  @keyframes dzbf-m{to{transform:translateX(-50%)}}
+  @keyframes dzbf-p{50%{opacity:.35}}
+  @media (prefers-reduced-motion:reduce){.dzbf *,.dzbf-tr{animation:none!important}}
+</style>
 
 {% schema %}
 {
   "name": "DZ · Black Friday",
   "settings": [
-    { "type": "collection", "id": "collection", "label": "Collezione delle offerte", "info": "Vuoto = PROMOZIONI. Vengono mostrati solo i prodotti disponibili con prezzo barrato." },
+    { "type": "collection", "id": "collection", "label": "Collezione delle offerte", "info": "Vuoto = PROMOZIONI. Si vedono solo i prodotti disponibili con prezzo barrato." },
     { "type": "range", "id": "min_discount", "label": "Sconto minimo da mostrare", "min": 5, "max": 50, "step": 5, "unit": "%", "default": 15 },
     { "type": "text", "id": "end_date", "label": "Fine offerte (conto alla rovescia)", "default": "2026-11-30T23:59:00+01:00", "info": "Formato AAAA-MM-GGTHH:MM:SS+01:00. Vuoto = niente conto alla rovescia." },
-    { "type": "text", "id": "kicker", "label": "Occhiello", "default": "Black Week Dal Zilio" },
-    { "type": "text", "id": "title_1", "label": "Titolo riga 1", "default": "Black" },
-    { "type": "text", "id": "title_2", "label": "Titolo riga 2", "default": "Friday" },
-    { "type": "text", "id": "upto", "label": "Testo prima della percentuale", "default": "Sconti fino al" },
-    { "type": "text", "id": "subtitle", "label": "Sottotitolo", "default": "[n] bici e accessori in offerta, controllati nella nostra officina. Fino a esaurimento scorte.", "info": "[n] = numero di offerte" },
-    { "type": "text", "id": "empty_text", "label": "Testo se non ci sono offerte", "default": "Le offerte stanno arrivando. Torna a trovarci." },
-    { "type": "text", "id": "countdown_label", "label": "Etichetta conto alla rovescia", "default": "Le offerte finiscono tra" },
-    { "type": "text", "id": "cta", "label": "Pulsante principale", "default": "Vedi tutte le offerte" },
-    { "type": "text", "id": "cta2", "label": "Pulsante secondario", "default": "Paga a rate" },
-    { "type": "url", "id": "cta2_link", "label": "Link pulsante secondario" },
-    { "type": "text", "id": "spot_label", "label": "Etichetta offerta in vetrina (la piu' scontata)", "default": "L'offerta più pazza" },
-    { "type": "text", "id": "top_k", "label": "Occhiello offerte top", "default": "I prezzi più bassi dell'anno" },
+    { "type": "image_picker", "id": "image", "label": "Foto dell'apertura", "info": "Vuoto = la foto attuale della home." },
+    { "type": "text", "id": "kicker", "label": "Occhiello", "default": "Black Week · fino al 30 novembre" },
+    { "type": "text", "id": "title", "label": "Titolo (riga sottile)", "default": "Black Friday." },
+    { "type": "text", "id": "upto", "label": "Testo prima della percentuale", "default": "Fino al" },
+    { "type": "text", "id": "subtitle", "label": "Sottotitolo", "default": "[n] bici in offerta, pronte in negozio e controllate nella nostra officina. Fino a esaurimento scorte.", "info": "[n] = numero di offerte" },
+    { "type": "text", "id": "empty_title", "label": "Titolo se non ci sono offerte", "default": "Le offerte stanno arrivando." },
+    { "type": "text", "id": "empty_text", "label": "Testo se non ci sono offerte", "default": "Torna a trovarci nei prossimi giorni." },
+    { "type": "text", "id": "cta", "label": "Pulsante principale", "default": "Vedi le offerte" },
+    { "type": "text", "id": "cta_budget", "label": "Pulsante budget", "default": "Scegli il budget" },
+    { "type": "text", "id": "cta2", "label": "Pulsante rate", "default": "Paga a rate" },
+    { "type": "url", "id": "cta2_link", "label": "Link pulsante rate" },
+    { "type": "text", "id": "stat_max", "label": "Numero 1: etichetta", "default": "SCONTO MASSIMO" },
+    { "type": "text", "id": "stat_n", "label": "Numero 2: etichetta", "default": "BICI IN OFFERTA" },
+    { "type": "text", "id": "stat_cd", "label": "Numero 3: etichetta", "default": "ALLA FINE DELLE OFFERTE" },
+    { "type": "text", "id": "tick", "label": "Testo del nastro", "default": "Black Friday Dal Zilio" },
+    { "type": "text", "id": "top_k", "label": "Occhiello offerte top", "default": "Black Friday" },
     { "type": "text", "id": "top_h", "label": "Titolo offerte top", "default": "Le più scontate" },
     { "type": "range", "id": "top_count", "label": "Quante offerte top", "min": 4, "max": 16, "step": 4, "default": 8 },
     { "type": "text", "id": "bud_k", "label": "Occhiello budget", "default": "Black Friday" },
     { "type": "text", "id": "bud_h", "label": "Titolo budget", "default": "Scegli il tuo budget" },
-    { "type": "text", "id": "bud_1", "label": "Etichetta fascia bassa", "default": "Sotto" },
-    { "type": "text", "id": "bud_2", "label": "Etichetta fasce centrali", "default": "Tra" },
-    { "type": "text", "id": "bud_3", "label": "Etichetta fascia alta", "default": "Oltre" },
+    { "type": "text", "id": "bud_1", "label": "Budget 1: prima del prezzo", "default": "Sotto" },
+    { "type": "text", "id": "bud_1p", "label": "Budget 1: testo", "default": "Per iniziare o per la città." },
+    { "type": "text", "id": "bud_2p", "label": "Budget 2: testo", "default": "Gravel, trekking ed e-bike per tutti i giorni." },
+    { "type": "text", "id": "bud_3p", "label": "Budget 3: testo", "default": "Carbonio, e-MTB e bici da corsa di gamma alta." },
+    { "type": "text", "id": "bud_4", "label": "Budget 4: prima del prezzo", "default": "Oltre" },
+    { "type": "text", "id": "bud_4p", "label": "Budget 4: testo", "default": "Il top di gamma, in offerta." },
+    { "type": "text", "id": "bud_go", "label": "Budget: link", "default": "Vedi le offerte" },
     { "type": "text", "id": "more_k", "label": "Occhiello altre offerte", "default": "Non finisce qui" },
     { "type": "text", "id": "more_h", "label": "Titolo altre offerte", "default": "Altre offerte" },
     { "type": "range", "id": "more_count", "label": "Quante altre offerte", "min": 4, "max": 24, "step": 4, "default": 12 },
