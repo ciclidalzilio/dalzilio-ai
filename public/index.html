@@ -4,201 +4,560 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cicli Dal Zilio — Pinarello in arrivo</title>
-  <meta name="description" content="Pinarello arriva da Cicli Dal Zilio. Iscriviti per sapere per primo quando." />
+  <meta name="description" content="Pinarello arriva da Cicli Dal Zilio, Montebelluna e Quinto di Treviso. Rivenditori ufficiali Trek, Scott, Cannondale e Amflow." />
   <meta name="theme-color" content="#000000" />
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
   <style>
     :root {
       --bg: #000;
+      --bg2: #0b0b0d;
+      --card: #141416;
       --text: #f5f5f7;
       --muted: #86868b;
       --line: rgba(255, 255, 255, 0.12);
       --accent: #2997ff;
+      --red: #c8102e;
       --glow: rgba(200, 16, 46, 0.35);
       --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif;
+      --wrap: 1120px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     html, body { background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 22px; }
 
-    /* Nav */
-    .nav {
-      position: fixed; inset: 0 0 auto 0; z-index: 10; height: 48px;
-      background: rgba(0, 0, 0, 0.72);
-      backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav-inner {
-      max-width: 1024px; height: 100%; margin: 0 auto; padding: 0 22px;
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 12px; letter-spacing: -0.01em;
-    }
-    .brand { font-weight: 600; font-size: 14px; letter-spacing: 0.02em; }
-    .nav-links { display: flex; gap: 32px; color: rgba(245, 245, 247, 0.8); }
-    .nav-links a:hover { color: var(--text); }
-    .nav-cta { color: var(--accent); }
-    @media (max-width: 640px) { .nav-links { display: none; } }
+    /* ---------- Barra info ---------- */
+    .util { overflow: hidden; background: var(--bg2); border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); height: 32px; display: flex; align-items: center; }
+    .util .track { display: flex; gap: 48px; white-space: nowrap; animation: ticker 40s linear infinite; padding-left: 48px; }
+    @keyframes ticker { to { transform: translateX(-50%); } }
 
-    /* Hero */
-    .hero {
-      position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 96px 16px 32px; text-align: center;
-    }
-    .hero::before {
-      content: ""; position: absolute; left: 50%; top: 62%; width: 900px; height: 520px;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(ellipse at center, var(--glow), transparent 65%);
-      filter: blur(40px); pointer-events: none;
-    }
-    .pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px;
-      font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
-    }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: #c8102e; box-shadow: 0 0 0 0 rgba(200,16,46,.7); animation: pulse 2s infinite; }
-    @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(200,16,46,0); } 100% { box-shadow: 0 0 0 0 rgba(200,16,46,0); } }
+    /* ---------- Header ---------- */
+    .nav { position: sticky; top: 0; z-index: 20; height: 52px; background: rgba(0,0,0,.72); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--line); }
+    .nav .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; letter-spacing: .01em; }
+    .logo img { height: 26px; width: auto; filter: grayscale(1) invert(1) contrast(1.3); mix-blend-mode: screen; }
+    .logo .wm { display: none; }
+    .logo.noimg .wm { display: inline; }
+    .menu { display: flex; gap: 28px; font-size: 12.5px; color: rgba(245,245,247,.8); }
+    .menu a:hover { color: var(--text); }
+    .menu .sale { color: #ff6b6b; }
+    .tools { display: flex; align-items: center; gap: 18px; }
+    .tools svg { width: 18px; height: 18px; display: block; }
+    .tools a, .burger { color: rgba(245,245,247,.85); }
+    .tools a:hover { color: var(--text); }
+    .burger { display: none; background: none; border: 0; cursor: pointer; width: 22px; height: 22px; position: relative; }
+    .burger span, .burger span::before { position: absolute; left: 2px; right: 2px; height: 1.5px; background: currentColor; content: ""; transition: transform .25s; }
+    .burger span { top: 8px; } .burger span::before { top: 6px; left: 0; right: 0; }
+    .nav.open .burger span { transform: translateY(3px) rotate(45deg); }
+    .nav.open .burger span::before { transform: translateY(-6px) rotate(-90deg); }
+    .mob { display: none; position: fixed; inset: 52px 0 0 0; background: rgba(0,0,0,.96); backdrop-filter: blur(20px); padding: 24px 28px; overflow: auto; z-index: 19; }
+    .nav.open + .mob { display: block; }
+    .mob h4 { font-size: 12px; color: var(--muted); font-weight: 500; margin: 22px 0 8px; }
+    .mob a { display: block; font-size: 26px; font-weight: 600; letter-spacing: -.02em; padding: 6px 0; }
+    @media (max-width: 900px) { .menu { display: none; } .burger { display: block; } }
 
-    h1 {
-      margin-top: 24px; font-size: clamp(48px, 9vw, 96px); font-weight: 700;
-      line-height: 1.02; letter-spacing: -0.035em;
-    }
-    h1 .soft {
-      display: block;
-      background: linear-gradient(180deg, #f5f5f7 0%, #6e6e73 100%);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .lead {
-      margin-top: 20px; max-width: 560px; font-size: clamp(19px, 2.4vw, 24px);
-      line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; color: var(--muted);
-    }
-
-    .ctas { width: 100%; margin-top: 32px; display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; align-items: center; }
-    .notify { display: flex; gap: 8px; width: min(420px, 100%); }
-    .notify input {
-      flex: 1; min-width: 0; height: 44px; padding: 0 18px; border-radius: 999px;
-      border: 1px solid var(--line); background: rgba(255,255,255,0.06); color: var(--text);
-      font: inherit; font-size: 15px; outline: none; transition: border-color .2s;
-    }
+    /* ---------- Hero Pinarello ---------- */
+    .hero { position: relative; min-height: calc(100svh - 84px); overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 72px 16px 40px; text-align: center; }
+    .hero::before { content: ""; position: absolute; left: 50%; top: 66%; width: 900px; height: 520px; transform: translate(-50%, -50%); background: radial-gradient(ellipse at center, var(--glow), transparent 65%); filter: blur(40px); pointer-events: none; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(200,16,46,.7); } 70% { box-shadow: 0 0 0 8px rgba(200,16,46,0); } 100% { box-shadow: 0 0 0 0 rgba(200,16,46,0); } }
+    h1 { margin-top: 22px; font-size: clamp(48px, 9vw, 96px); font-weight: 700; line-height: 1.02; letter-spacing: -.035em; }
+    .soft { display: block; background: linear-gradient(180deg, #f5f5f7 0%, #6e6e73 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { margin: 20px auto 0; max-width: 580px; font-size: clamp(19px, 2.4vw, 23px); line-height: 1.38; font-weight: 500; letter-spacing: -.01em; color: var(--muted); }
+    .notify { margin: 32px auto 0; display: flex; gap: 8px; width: min(440px, 100%); }
+    .notify input { flex: 1; min-width: 0; height: 46px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.06); color: var(--text); font: inherit; font-size: 15px; outline: none; transition: border-color .2s; }
     .notify input::placeholder { color: var(--muted); }
     .notify input:focus { border-color: var(--accent); }
-    .btn {
-      height: 44px; padding: 0 22px; border: 0; border-radius: 999px; cursor: pointer;
-      background: var(--text); color: #000; font: inherit; font-size: 15px; font-weight: 500;
-      transition: transform .15s, opacity .2s;
-    }
-    .btn:hover { opacity: .88; }
-    .btn:active { transform: scale(.97); }
-    .link { color: var(--accent); font-size: 17px; }
-    .link:hover { text-decoration: underline; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; padding: 0 22px; border: 0; border-radius: 999px; cursor: pointer; background: var(--text); color: #000; font: inherit; font-size: 15px; font-weight: 500; white-space: nowrap; transition: transform .15s, opacity .2s; }
+    .btn:hover { opacity: .88; } .btn:active { transform: scale(.97); }
+    .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+    .btn.wa { background: #25d366; color: #000; }
     .note { margin-top: 14px; min-height: 18px; font-size: 13px; color: var(--muted); }
-
-    /* Bike line art */
-    .bike { position: relative; margin-top: 40px; width: clamp(300px, calc((100svh - 560px) * 2.1), 680px); max-width: 100%; opacity: 0; animation: rise 1.4s .3s cubic-bezier(.2,.7,.2,1) forwards; }
-    .bike svg { width: 100%; height: auto; display: block; }
+    .bike { position: relative; margin-top: 36px; width: clamp(300px, calc((100svh - 560px) * 2.1), 640px); max-width: 100%; opacity: 0; animation: rise 1.4s .3s cubic-bezier(.2,.7,.2,1) forwards; }
+    .bike svg { width: 100%; height: auto; }
     .bike path, .bike circle, .bike line { fill: none; stroke: url(#steel); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .bike .rim { stroke-width: 1.2; opacity: .5; }
     .floor { position: absolute; left: 10%; right: 10%; bottom: -6px; height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); }
-
     .reveal { opacity: 0; transform: translateY(16px); animation: rise 1s cubic-bezier(.2,.7,.2,1) forwards; }
     .d1 { animation-delay: .05s; } .d2 { animation-delay: .15s; } .d3 { animation-delay: .25s; } .d4 { animation-delay: .35s; }
     @keyframes rise { to { opacity: 1; transform: none; } }
 
-    .scroll { margin-top: 40px; font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+    /* ---------- Sezioni ---------- */
+    section.block { padding: 96px 0; }
+    .k { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .02em; margin-bottom: 8px; }
+    h2 { font-size: clamp(32px, 5vw, 52px); font-weight: 700; letter-spacing: -.03em; line-height: 1.06; }
+    .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 36px; }
+    .more { color: var(--accent); font-size: 16px; white-space: nowrap; }
+    .more:hover { text-decoration: underline; }
+
+    /* Marchi */
+    .brands { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg2); padding: 56px 0; text-align: center; }
+    .brands .k { margin-bottom: 28px; }
+    .brow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 28px 64px; }
+    .brow a { opacity: .7; transition: opacity .2s; }
+    .brow a:hover { opacity: 1; }
+    .brow img { height: calc(30px * var(--s, 1)); width: auto; filter: grayscale(1) invert(1); mix-blend-mode: screen; }
+    .brow .next { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 22px; letter-spacing: .14em; opacity: 1; color: var(--text); }
+    .brow .next small { font-size: 10px; letter-spacing: .1em; font-weight: 600; color: var(--red); border: 1px solid rgba(200,16,46,.5); border-radius: 99px; padding: 3px 8px; }
+
+    /* Categorie */
+    .cats { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 260px; gap: 14px; }
+    .cat { position: relative; overflow: hidden; border-radius: 22px; background: var(--card); }
+    .cat img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+    .cat:hover img { transform: scale(1.04); }
+    .cat::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.75)); }
+    .cat .lb { position: absolute; left: 22px; right: 22px; bottom: 20px; z-index: 2; }
+    .cat .c { font-size: 12px; color: rgba(255,255,255,.75); }
+    .cat h3 { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin-top: 2px; }
+    .cat p { font-size: 14px; color: rgba(255,255,255,.8); margin-top: 6px; max-width: 34ch; line-height: 1.4; }
+    .cat.big { grid-column: span 2; grid-row: span 2; }
+    .cat.big h3 { font-size: 34px; }
+    .cat.wide { grid-column: span 2; }
+    @media (max-width: 900px) { .cats { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; } .cat.big { grid-row: span 1; } }
+    @media (max-width: 560px) { .cats { grid-template-columns: 1fr; } .cat.big, .cat.wide { grid-column: span 1; } }
+
+    /* Prodotti */
+    .prods { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .prod { background: var(--card); border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; transition: transform .3s; }
+    .prod:hover { transform: translateY(-4px); }
+    .prod .ph { aspect-ratio: 4 / 3; background: #fff; overflow: hidden; }
+    .prod .ph img { width: 100%; height: 100%; object-fit: contain; }
+    .prod .ph.photo img { object-fit: cover; }
+    .prod .in { padding: 16px 18px 20px; }
+    .prod .br { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+    .prod h3 { font-size: 16px; font-weight: 600; margin-top: 4px; line-height: 1.3; }
+    .prod .pr { margin-top: 10px; font-size: 15px; }
+    .prod .pr s { color: var(--muted); margin-left: 6px; font-size: 13px; }
+    .tag { display: inline-block; font-size: 11px; font-weight: 600; color: #000; background: var(--text); border-radius: 99px; padding: 2px 8px; margin-left: 6px; vertical-align: 1px; }
+    @media (max-width: 900px) { .prods { grid-template-columns: repeat(2, 1fr); } }
+
+    /* Servizi */
+    .svc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .sb { background: var(--card); border-radius: 22px; padding: 28px 24px; display: flex; flex-direction: column; gap: 10px; transition: background .2s; }
+    .sb:hover { background: #1b1b1e; }
+    .sb .ic { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,.08); display: grid; place-items: center; }
+    .sb .ic svg { width: 20px; height: 20px; }
+    .sb h3 { font-size: 19px; font-weight: 600; letter-spacing: -.01em; margin-top: 6px; }
+    .sb p { font-size: 14.5px; color: var(--muted); line-height: 1.45; flex: 1; }
+    .sb .go { color: var(--accent); font-size: 14px; }
+    @media (max-width: 900px) { .svc { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .svc { grid-template-columns: 1fr; } }
+
+    /* Finanziamento */
+    .fin { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; background: linear-gradient(135deg, #141416, #0b0b0d); border: 1px solid var(--line); border-radius: 28px; padding: 56px; }
+    .fin p.t { color: var(--muted); font-size: 18px; line-height: 1.5; margin: 16px 0 26px; max-width: 46ch; }
+    .fin p.t b { color: var(--text); font-weight: 600; }
+    .fcard { background: rgba(255,255,255,.05); border: 1px solid var(--line); border-radius: 20px; padding: 24px; }
+    .fcard .row { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .fcard .row b { color: var(--text); font-weight: 600; }
+    .fcard .bigv { display: flex; align-items: baseline; gap: 6px; margin: 18px 0 14px; }
+    .fcard .bigv b { font-size: 48px; font-weight: 700; letter-spacing: -.03em; }
+    .fcard .bigv span { color: var(--muted); }
+    .bar { height: 4px; border-radius: 4px; background: rgba(255,255,255,.1); overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 78%; background: var(--text); border-radius: 4px; }
+    .fcard small { display: block; margin-top: 14px; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+    @media (max-width: 860px) { .fin { grid-template-columns: 1fr; padding: 32px 24px; } }
+
+    /* Chi siamo */
+    .about { position: relative; border-radius: 28px; overflow: hidden; min-height: 520px; display: flex; align-items: flex-end; }
+    .about img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .about::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 20%, rgba(0,0,0,.85)); }
+    .about .in { position: relative; z-index: 2; padding: 48px; max-width: 640px; }
+    .about p { color: rgba(255,255,255,.82); font-size: 18px; line-height: 1.5; margin: 14px 0 24px; }
+    .nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 14px; }
+    .nums div { background: var(--card); border-radius: 20px; padding: 24px; }
+    .nums b { display: block; font-size: 34px; font-weight: 700; letter-spacing: -.03em; }
+    .nums span { font-size: 11px; letter-spacing: .08em; color: var(--muted); }
+    @media (max-width: 760px) { .about .in { padding: 28px 22px; } .nums { grid-template-columns: repeat(2, 1fr); } }
+
+    /* Sedi */
+    .stores { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .store { background: var(--card); border-radius: 22px; padding: 30px; }
+    .store h3 { font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+    .store p { color: var(--muted); margin-top: 8px; line-height: 1.5; }
+    .store .act { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .store .btn { height: 40px; font-size: 14px; padding: 0 18px; }
+    .hours { margin-top: 14px; background: var(--card); border-radius: 22px; padding: 24px 30px; display: flex; flex-wrap: wrap; gap: 8px 40px; justify-content: space-between; align-items: center; color: var(--muted); }
+    .hours b { color: var(--text); font-weight: 600; }
+    @media (max-width: 760px) { .stores { grid-template-columns: 1fr; } }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--line); margin-top: 40px; padding: 56px 0 100px; font-size: 13px; color: var(--muted); }
+    .fgrid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; }
+    .fgrid h5 { color: var(--text); font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+    .fgrid a { display: block; padding: 4px 0; }
+    .fgrid a:hover { color: var(--text); }
+    .fbrand { color: var(--text); font-size: 16px; font-weight: 700; }
+    .fgrid p { line-height: 1.5; margin-top: 10px; max-width: 34ch; }
+    .fbottom { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    @media (max-width: 760px) { .fgrid { grid-template-columns: 1fr 1fr; } }
+
+    .wa-fab { position: fixed; right: 20px; bottom: 20px; z-index: 30; width: 54px; height: 54px; border-radius: 50%; background: #25d366; color: #fff; display: grid; place-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+    .wa-fab svg { width: 28px; height: 28px; }
+
+    /* Foto mancante: niente icona rotta, resta lo sfondo */
+    img.ko { visibility: hidden; }
 
     @media (prefers-reduced-motion: reduce) {
       .reveal, .bike { animation: none; opacity: 1; transform: none; }
-      .dot { animation: none; }
+      .dot, .util .track { animation: none; }
     }
   </style>
 </head>
 <body>
-  <header class="nav">
-    <div class="nav-inner">
-      <a class="brand" href="/">Dal Zilio</a>
-      <nav class="nav-links">
-        <a href="#">Bici</a>
-        <a href="#">Officina</a>
-        <a href="#">Bike fitting</a>
-        <a href="#">Contatti</a>
+
+  <div class="util" aria-hidden="true"><div class="track">
+    <span>Pinarello arriva da Cicli Dal Zilio</span><span>Spedizione gratuita in tutta Italia</span><span>Rivenditori ufficiali TREK · SCOTT · CANNONDALE · AMFLOW</span><span>Pagamenti rateali</span><span>Assistenza in officina</span><span>Ritiro gratuito in negozio</span>
+    <span>Pinarello arriva da Cicli Dal Zilio</span><span>Spedizione gratuita in tutta Italia</span><span>Rivenditori ufficiali TREK · SCOTT · CANNONDALE · AMFLOW</span><span>Pagamenti rateali</span><span>Assistenza in officina</span><span>Ritiro gratuito in negozio</span>
+  </div></div>
+
+  <header class="nav" id="nav">
+    <div class="wrap">
+      <a class="logo" href="https://ciclidalzilio.com/" aria-label="Cicli Dal Zilio — home">
+        <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/logodz.png?v=1739270557&width=400" alt="Cicli Dal Zilio" onerror="this.closest('.logo').classList.add('noimg');this.remove()">
+        <span class="wm">Cicli Dal Zilio</span>
+      </a>
+      <nav class="menu">
+        <a href="https://ciclidalzilio.com/collections/bici-da-strada">Corsa</a>
+        <a href="https://ciclidalzilio.com/collections/ebikes">E-Bike</a>
+        <a href="https://ciclidalzilio.com/collections/gravel">Gravel</a>
+        <a href="https://ciclidalzilio.com/collections/mountain-bike">MTB</a>
+        <a href="https://ciclidalzilio.com/collections/urban">Urban</a>
+        <a href="https://ciclidalzilio.com/pages/service">Servizi</a>
+        <a class="sale" href="https://ciclidalzilio.com/collections/usato-1">Usato</a>
       </nav>
-      <a class="nav-cta" href="#avvisami">Avvisami</a>
+      <div class="tools">
+        <a href="https://ciclidalzilio.com/search" aria-label="Cerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></a>
+        <a href="https://ciclidalzilio.com/account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></a>
+        <a href="https://ciclidalzilio.com/cart" aria-label="Carrello"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 12.3a1.5 1.5 0 001.5 1.2h8.8a1.5 1.5 0 001.5-1.2L21 8H6"/><circle cx="9.5" cy="20.5" r="1.3"/><circle cx="17.5" cy="20.5" r="1.3"/></svg></a>
+        <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+      </div>
     </div>
   </header>
+  <div class="mob" id="mob">
+    <h4>Catalogo</h4>
+    <a href="https://ciclidalzilio.com/collections/bici-da-strada">Corsa</a>
+    <a href="https://ciclidalzilio.com/collections/ebikes">E-Bike</a>
+    <a href="https://ciclidalzilio.com/collections/gravel">Gravel</a>
+    <a href="https://ciclidalzilio.com/collections/mountain-bike">Mountain Bike</a>
+    <a href="https://ciclidalzilio.com/collections/urban">Urban</a>
+    <a href="https://ciclidalzilio.com/collections/usato-1">Usato</a>
+    <h4>Servizi</h4>
+    <a href="https://ciclidalzilio.com/pages/service">Officina e assistenza</a>
+    <a href="https://ciclidalzilio.com/pages/permuta-il-tuo-usato">Permuta il tuo usato</a>
+    <a href="https://ciclidalzilio.com/pages/finanziamenti-agevolati">Finanziamenti</a>
+    <h4>Negozio</h4>
+    <a href="#sedi">Dove siamo e contatti</a>
+    <a href="https://ciclidalzilio.com/pages/chi-siamo">Chi siamo</a>
+  </div>
 
-  <main class="hero">
-    <span class="pill reveal d1"><span class="dot"></span>Pre-lancio</span>
+  <main>
+    <!-- Pinarello: pre-lancio -->
+    <section class="hero" id="pinarello">
+      <span class="pill reveal d1"><span class="dot"></span>Pre-lancio</span>
+      <h1 class="reveal d2">Pinarello.<span class="soft">In arrivo.</span></h1>
+      <p class="lead reveal d3">Il mito delle corse sta per arrivare da Cicli Dal Zilio, a Montebelluna e Quinto di Treviso. Lascia la tua email: sarai tra i primi a vederle e provarle.</p>
 
-    <h1 class="reveal d2">Pinarello.<span class="soft">In arrivo.</span></h1>
-
-    <p class="lead reveal d3">Una nuova pagina sta per iniziare da Cicli Dal Zilio. Il mito delle corse, presto in negozio.</p>
-
-    <div class="ctas reveal d4" id="avvisami">
-      <form class="notify" novalidate>
-        <input type="email" name="email" placeholder="La tua email" autocomplete="email" required aria-label="Email" />
+      <form class="notify reveal d4" id="avvisami" action="https://ciclidalzilio.com/contact#contact_form" method="post" target="dz-iscrizione" novalidate>
+        <input type="hidden" name="form_type" value="customer">
+        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="contact[tags]" value="newsletter,pinarello">
+        <input type="email" name="contact[email]" placeholder="La tua email" autocomplete="email" required aria-label="Email">
         <button class="btn" type="submit">Avvisami</button>
       </form>
-    </div>
-    <p class="note reveal d4" role="status" aria-live="polite">Sii il primo a saperlo. Niente spam.</p>
+      <iframe name="dz-iscrizione" title="Iscrizione" hidden></iframe>
+      <p class="note reveal d4" role="status" aria-live="polite">Sii il primo a saperlo. Niente spam.</p>
 
-    <div class="bike" aria-hidden="true">
-      <svg viewBox="0 0 760 360">
-        <defs>
-          <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#f5f5f7" />
-            <stop offset=".55" stop-color="#8e8e93" />
-            <stop offset="1" stop-color="#3a3a3c" />
-          </linearGradient>
-        </defs>
-        <!-- wheels -->
-        <circle cx="170" cy="240" r="110" />
-        <circle class="rim" cx="170" cy="240" r="96" />
-        <circle cx="590" cy="240" r="110" />
-        <circle class="rim" cx="590" cy="240" r="96" />
-        <!-- frame -->
-        <path d="M170 240 L335 245 L285 95 Z" />
-        <path d="M285 95 L520 80 L335 245" />
-        <path d="M520 80 L590 240" />
-        <path d="M512 62 L527 98" />
-        <!-- seatpost + saddle -->
-        <path d="M285 95 L272 52" />
-        <path d="M240 48 Q270 40 302 50" />
-        <!-- cockpit -->
-        <path d="M512 62 L548 58 Q578 58 576 86 Q574 104 556 106" />
-        <!-- crank -->
-        <circle cx="335" cy="245" r="20" />
-        <line x1="335" y1="245" x2="358" y2="282" />
-        <!-- hubs -->
-        <circle cx="170" cy="240" r="4" />
-        <circle cx="590" cy="240" r="4" />
-      </svg>
-      <div class="floor"></div>
-    </div>
+      <div class="bike" aria-hidden="true">
+        <svg viewBox="0 0 760 360">
+          <defs>
+            <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f5f5f7" /><stop offset=".55" stop-color="#8e8e93" /><stop offset="1" stop-color="#3a3a3c" />
+            </linearGradient>
+          </defs>
+          <circle cx="170" cy="240" r="110" /><circle class="rim" cx="170" cy="240" r="96" />
+          <circle cx="590" cy="240" r="110" /><circle class="rim" cx="590" cy="240" r="96" />
+          <path d="M170 240 L335 245 L285 95 Z" /><path d="M285 95 L520 80 L335 245" />
+          <path d="M520 80 L590 240" /><path d="M512 62 L527 98" />
+          <path d="M285 95 L272 52" /><path d="M240 48 Q270 40 302 50" />
+          <path d="M512 62 L548 58 Q578 58 576 86 Q574 104 556 106" />
+          <circle cx="335" cy="245" r="20" /><line x1="335" y1="245" x2="358" y2="282" />
+          <circle cx="170" cy="240" r="4" /><circle cx="590" cy="240" r="4" />
+        </svg>
+        <div class="floor"></div>
+      </div>
+    </section>
 
-    <span class="scroll">Cicli Dal Zilio</span>
+    <!-- Marchi -->
+    <section class="brands">
+      <div class="wrap">
+        <p class="k">Rivenditori ufficiali</p>
+        <div class="brow">
+          <a href="https://ciclidalzilio.com/pages/trek"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/trek.png?v=1726651389" alt="TREK" loading="lazy"></a>
+          <a href="https://ciclidalzilio.com/pages/scott"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/scott.png?v=1726651430" alt="SCOTT" loading="lazy"></a>
+          <a href="https://ciclidalzilio.com/pages/cannondale"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/cnd.png?v=1726651464" alt="Cannondale" loading="lazy"></a>
+          <a href="https://ciclidalzilio.com/pages/amflow" style="--s:1.6"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/amflow.png?v=1773137232" alt="Amflow" loading="lazy"></a>
+          <a class="next" href="#pinarello">PINARELLO <small>PRESTO</small></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categorie -->
+    <section class="block">
+      <div class="wrap">
+        <div class="head"><div><p class="k">Il catalogo</p><h2>Scegli la tua disciplina.</h2></div><a class="more" href="https://ciclidalzilio.com/collections/tutte-le-bici">Tutte le bici ›</a></div>
+        <div class="cats">
+          <a class="cat big" href="https://ciclidalzilio.com/collections/usato-1">
+            <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/collections/Caselle_Homepage_DZ-2.jpg?v=1785429304&width=1200" alt="" loading="lazy">
+            <div class="lb"><span class="c">38 modelli · Pezzi unici</span><h3>Usato garantito</h3><p>Bici selezionate e controllate nella nostra officina, pronte a partire.</p></div>
+          </a>
+          <a class="cat wide" href="https://ciclidalzilio.com/collections/bici-da-strada">
+            <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/collections/1_0f9fdd00-d235-4f9f-9b0c-73c219c3e170.jpg?v=1785429821&width=1000" alt="" loading="lazy">
+            <div class="lb"><span class="c">75 modelli</span><h3>Bici da corsa</h3></div>
+          </a>
+          <a class="cat wide" href="https://ciclidalzilio.com/collections/ebikes">
+            <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/collections/DSC3931.jpg?v=1785429340&width=1000" alt="" loading="lazy">
+            <div class="lb"><span class="c">91 modelli</span><h3>E-Bike</h3></div>
+          </a>
+          <a class="cat" href="https://ciclidalzilio.com/collections/gravel">
+            <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/collections/23-Blendr-Saddle-Bag-Checkpoint-EQ-NOEX-04167.jpg?v=1785429355&width=700" alt="" loading="lazy">
+            <div class="lb"><span class="c">51 modelli</span><h3>Gravel</h3></div>
+          </a>
+          <a class="cat" href="https://ciclidalzilio.com/collections/mountain-bike">
+            <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/collections/TK20_Marlin_28_1.jpg?v=1785429468&width=700" alt="" loading="lazy">
+            <div class="lb"><span class="c">136 modelli</span><h3>Mountain bike</h3></div>
+          </a>
+          <a class="cat" href="https://ciclidalzilio.com/collections/urban">
+            <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/collections/bento-urban.jpg?v=1785429479&width=700" alt="" loading="lazy">
+            <div class="lb"><span class="c">28 modelli</span><h3>Urban</h3></div>
+          </a>
+          <a class="cat" href="https://ciclidalzilio.com/collections/promozioni">
+            <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/collections/Caselle_Homepage_DZ_e111a317-c4aa-4275-90d2-d8f987e08989.jpg?v=1765445020&width=700" alt="" loading="lazy">
+            <div class="lb"><span class="c">163 modelli</span><h3>Promozioni</h3></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nuove -->
+    <section class="block" style="padding-top:0">
+      <div class="wrap">
+        <div class="head"><div><p class="k">Disponibili in negozio</p><h2>Le bici del momento.</h2></div><a class="more" href="https://ciclidalzilio.com/collections/new-arrivals">Vedi tutte ›</a></div>
+        <div class="prods">
+          <a class="prod" href="https://ciclidalzilio.com/products/madone-slr-9-axs-gen-8">
+            <div class="ph"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/2f9d463274001ecaf6ae97951046e890.jpg?v=1762264638&width=700" alt="Trek Madone SLR 9 AXS Gen 8" loading="lazy"></div>
+            <div class="in"><span class="br">Trek</span><h3>Madone SLR 9 AXS Gen 8</h3><div class="pr">€ 11.999</div></div>
+          </a>
+          <a class="prod" href="https://ciclidalzilio.com/products/madone-sl-7-gen-9">
+            <div class="ph"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/7c66b710b5e8b0f17227d1f8f6a14664.jpg?v=1763121649&width=700" alt="Trek Madone SL 7 Gen 8" loading="lazy"></div>
+            <div class="in"><span class="br">Trek</span><h3>Madone SL 7 Gen 8</h3><div class="pr">€ 4.799<s>€ 6.099</s><span class="tag">-21%</span></div></div>
+          </a>
+          <a class="prod" href="https://ciclidalzilio.com/products/scott-strike-40-2027">
+            <div class="ph"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/2286431.png?v=1789648785&width=700" alt="Scott Strike 40 2027" loading="lazy"></div>
+            <div class="in"><span class="br">Scott</span><h3>Strike 40 — 2027</h3><div class="pr">€ 3.599<s>€ 3.999</s><span class="tag">-10%</span></div></div>
+          </a>
+          <a class="prod" href="https://ciclidalzilio.com/products/rail-5-gen-5">
+            <div class="ph"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/55bfb65906aaf184ee446b2cdeba10fb_a5855cdb-22b0-4b29-b499-8fecc289d66b.jpg?v=1758808567&width=700" alt="Trek Rail+ 5 Gen 5" loading="lazy"></div>
+            <div class="in"><span class="br">Trek</span><h3>Rail+ 5 Gen 5</h3><div class="pr">€ 3.799<s>€ 4.999</s><span class="tag">-24%</span></div></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Usato -->
+    <section class="block" style="padding-top:0">
+      <div class="wrap">
+        <div class="head"><div><p class="k">Occasioni</p><h2>Usato garantito.</h2></div><a class="more" href="https://ciclidalzilio.com/collections/usato-1">Tutto l'usato ›</a></div>
+        <div class="prods">
+          <a class="prod" href="https://ciclidalzilio.com/products/trek-madone-slr-7-axs-tg-52">
+            <div class="ph photo"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/DSC06812.jpg?v=1792688253&width=700" alt="Trek Madone SLR 7 AXS" loading="lazy"></div>
+            <div class="in"><span class="br">Trek · Usato</span><h3>Madone SLR 7 AXS tg 52</h3><div class="pr">€ 2.900</div></div>
+          </a>
+          <a class="prod" href="https://ciclidalzilio.com/products/orbea-oiz-ltd-tg-m">
+            <div class="ph photo"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/DSC06775.jpg?v=1792689225&width=700" alt="Orbea OIZ M-LTD" loading="lazy"></div>
+            <div class="in"><span class="br">Orbea · Usato</span><h3>OIZ M-LTD tg M</h3><div class="pr">€ 3.700</div></div>
+          </a>
+          <a class="prod" href="https://ciclidalzilio.com/products/trek-emonda-sl-7-tg-56-copia">
+            <div class="ph photo"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/DSC06833.jpg?v=1793118429&width=700" alt="Trek Emonda SL 7" loading="lazy"></div>
+            <div class="in"><span class="br">Trek · Usato</span><h3>Emonda SL 7 tg 56</h3><div class="pr">€ 2.400</div></div>
+          </a>
+          <a class="prod" href="https://ciclidalzilio.com/products/specialized-epic-evo-carbon-tg-l">
+            <div class="ph photo"><img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/DSC06861.jpg?v=1793118857&width=700" alt="Specialized Epic Evo carbon" loading="lazy"></div>
+            <div class="in"><span class="br">Specialized · Usato</span><h3>Epic Evo carbon tg L</h3><div class="pr">€ 1.500</div></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Servizi -->
+    <section class="block" style="padding-top:0">
+      <div class="wrap">
+        <div class="head"><div><p class="k">Servizi</p><h2>Più di un negozio di bici.</h2></div><a class="more" href="https://ciclidalzilio.com/pages/service">Tutti i servizi ›</a></div>
+        <div class="svc">
+          <a class="sb" href="https://ciclidalzilio.com/pages/service">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4L15 12l-3-3z"/></svg></span>
+            <h3>Service &amp; Officina</h3><p>Tagliandi, sospensioni, gruppi elettronici: la tua bici in mani esperte, qualunque sia il marchio.</p><span class="go">Scopri ›</span>
+          </a>
+          <a class="sb" href="https://ciclidalzilio.com/pages/permuta-il-tuo-usato">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></span>
+            <h3>Permuta il tuo usato</h3><p>Valutazione gratuita: la tua bici attuale vale subito come acconto sulla nuova.</p><span class="go">Scopri ›</span>
+          </a>
+          <a class="sb" href="https://ciclidalzilio.com/pages/finanziamenti-agevolati">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M4 10h16"/></svg></span>
+            <h3>Finanziamenti agevolati</h3><p>Da 6 a 60 rate a TAN fisso, risposta in pochi minuti.</p><span class="go">Scopri ›</span>
+          </a>
+          <a class="sb" href="#sedi">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6.5" cy="16.5" r="3.4"/><circle cx="17.5" cy="16.5" r="3.4"/><path d="M6.5 16.5l5-8h4l2 8M11.5 8.5l-1.5-3h3.5"/></svg></span>
+            <h3>Test ride &amp; consulenza</h3><p>Prova prima di scegliere, con i consigli di chi pedala davvero. In negozio o su appuntamento.</p><span class="go">Scopri ›</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Finanziamento -->
+    <section class="block" style="padding-top:0">
+      <div class="wrap">
+        <div class="fin">
+          <div>
+            <p class="k">Finanziamento agevolato</p>
+            <h2>La bici subito. Il pagamento, con calma.</h2>
+            <p class="t">Da <b>6 a 60 rate</b> con <b>TAN fisso</b> e risposta in pochi minuti. Simuli la rata direttamente sulla scheda di ogni bici. Anche sull'usato.</p>
+            <a class="btn" href="https://ciclidalzilio.com/pages/finanziamenti-agevolati">Scopri i finanziamenti</a>
+          </div>
+          <div class="fcard">
+            <p class="k" style="margin:0 0 6px">Esempio di rata</p>
+            <div class="row"><span>Importo</span><b>€ 4.199</b></div>
+            <div class="row"><span>Durata</span><b>48 mesi</b></div>
+            <div class="bigv"><b>€ 100</b><span>/mese</span></div>
+            <div class="bar"><i></i></div>
+            <small>Esempio con ammortamento alla francese. Il TAEG dipende da spese di istruttoria e imposte ed è indicato nel contratto. Salvo approvazione della finanziaria.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chi siamo -->
+    <section class="block" style="padding-top:0">
+      <div class="wrap">
+        <div class="about">
+          <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/L1020273.jpg?v=1740516405&width=2000" alt="" loading="lazy">
+          <div class="in">
+            <p class="k" style="color:#ffb27a">Chi siamo</p>
+            <h2>Due fratelli, una storia su due ruote.</h2>
+            <p>Siamo partiti nel 2011 con un negozio di 30 metri quadri. Oggi siamo due sedi, un'officina che è il cuore di tutto e i marchi che sognavamo da ragazzi. Presto, anche Pinarello.</p>
+            <a class="btn" href="https://ciclidalzilio.com/pages/chi-siamo">La nostra storia</a>
+          </div>
+        </div>
+        <div class="nums">
+          <div><b>2011</b><span>L'ANNO DI PARTENZA</span></div>
+          <div><b>2 sedi</b><span>MONTEBELLUNA · QUINTO</span></div>
+          <div><b>700+</b><span>BICI A CATALOGO</span></div>
+          <div><b>4+1</b><span>BRAND UFFICIALI</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sedi -->
+    <section class="block" id="sedi" style="padding-top:0">
+      <div class="wrap">
+        <div class="head"><div><p class="k">Vieni a trovarci</p><h2>Le bici si scelgono di persona.</h2></div></div>
+        <div class="stores">
+          <div class="store">
+            <h3>Montebelluna</h3>
+            <p>Via Piave 34, 31044 Montebelluna (TV)<br>Tel. +39 345 7815102</p>
+            <div class="act">
+              <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=Cicli%20Dal%20Zilio%2C%20Via%20Piave%2034%2C%20Montebelluna%20TV">Indicazioni</a>
+              <a class="btn ghost" href="tel:+393457815102">Chiama</a>
+            </div>
+          </div>
+          <div class="store">
+            <h3>Quinto di Treviso</h3>
+            <p>Via Vittorio Emanuele 53, 31055 Quinto di Treviso (TV)<br>Tel. +39 347 4233961</p>
+            <div class="act">
+              <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=Cicli%20Dal%20Zilio%2C%20Via%20Vittorio%20Emanuele%2053%2C%20Quinto%20di%20Treviso%20TV">Indicazioni</a>
+              <a class="btn ghost" href="tel:+393474233961">Chiama</a>
+            </div>
+          </div>
+        </div>
+        <div class="hours">
+          <span><b>Lun–Ven</b> 9:30–12:30 · 15:30–19:30</span>
+          <span>Mercoledì e sabato solo mattina · Domenica chiuso</span>
+          <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/393457815102?text=Ciao%20Cicli%20Dal%20Zilio!%20Vorrei%20un%E2%80%99informazione.">Scrivici su WhatsApp</a>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <footer>
+    <div class="wrap">
+      <div class="fgrid">
+        <div>
+          <b class="fbrand">Cicli Dal Zilio</b>
+          <p>Passione su due ruote dal cuore del Veneto. Vendita, assistenza e consulenza per ogni ciclista.</p>
+        </div>
+        <div><h5>Catalogo</h5>
+          <a href="https://ciclidalzilio.com/collections/bici-da-strada">Bici da Corsa</a>
+          <a href="https://ciclidalzilio.com/collections/ebikes">E-Bike</a>
+          <a href="https://ciclidalzilio.com/collections/gravel">Gravel</a>
+          <a href="https://ciclidalzilio.com/collections/mountain-bike">Mountain Bike</a>
+          <a href="https://ciclidalzilio.com/collections/usato-1">Usato</a>
+        </div>
+        <div><h5>Servizi</h5>
+          <a href="https://ciclidalzilio.com/pages/service">Service &amp; officina</a>
+          <a href="https://ciclidalzilio.com/pages/permuta-il-tuo-usato">Permuta il tuo usato</a>
+          <a href="https://ciclidalzilio.com/pages/finanziamenti-agevolati">Finanziamenti agevolati</a>
+        </div>
+        <div><h5>Contatti</h5>
+          <a href="https://ciclidalzilio.com/pages/chi-siamo">Chi siamo</a>
+          <a href="#sedi">Dove siamo</a>
+          <a href="mailto:info@ciclidalzilio.com">info@ciclidalzilio.com</a>
+          <a href="https://www.instagram.com/ciclidalzilio/" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+      <div class="fbottom"><small>© <span id="anno">2026</span> CICLI DAL ZILIO</small><small>Montebelluna · Quinto di Treviso</small></div>
+    </div>
+  </footer>
+
+  <a class="wa-fab" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp" href="https://wa.me/393457815102?text=Ciao%20Cicli%20Dal%20Zilio!%20Vorrei%20info%20su%20Pinarello.">
+    <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16.04 3C8.86 3 3.03 8.83 3.03 16.01c0 2.29.6 4.53 1.75 6.5L3 29l6.66-1.74a12.94 12.94 0 006.38 1.66h.01c7.18 0 13.01-5.83 13.01-13.01C29.06 8.83 23.22 3 16.04 3zm0 23.72h-.01a10.8 10.8 0 01-5.5-1.5l-.39-.24-4.06 1.06 1.08-3.96-.26-.41a10.73 10.73 0 01-1.65-5.74c0-5.96 4.85-10.81 10.82-10.81 2.89 0 5.6 1.13 7.64 3.17a10.74 10.74 0 013.16 7.65c0 5.96-4.85 10.8-10.83 10.8zm5.94-8.09c-.33-.16-1.93-.95-2.22-1.06-.3-.11-.52-.16-.73.17-.22.32-.84 1.05-1.03 1.27-.19.22-.38.24-.7.08-.33-.16-1.38-.51-2.62-1.62-.97-.86-1.62-1.93-1.81-2.26-.19-.32-.02-.5.14-.66.15-.15.33-.38.49-.58.16-.19.22-.33.33-.54.11-.22.05-.41-.03-.57-.08-.16-.73-1.77-1-2.42-.26-.63-.53-.55-.73-.56l-.62-.01c-.22 0-.57.08-.86.41-.3.32-1.13 1.1-1.13 2.69s1.16 3.12 1.32 3.34c.16.22 2.28 3.48 5.52 4.88.77.33 1.37.53 1.84.68.77.25 1.48.21 2.03.13.62-.09 1.93-.79 2.2-1.55.27-.76.27-1.42.19-1.55-.08-.14-.3-.22-.62-.38z"/></svg>
+  </a>
+
   <script>
-    const form = document.querySelector(".notify");
-    const note = document.querySelector(".note");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = form.email.value.trim();
+    // Foto che non si caricano: niente icona rotta
+    document.querySelectorAll("img").forEach(function (img) {
+      img.addEventListener("error", function () { img.classList.add("ko"); });
+    });
+
+    document.getElementById("anno").textContent = new Date().getFullYear();
+
+    // Menu mobile
+    var nav = document.getElementById("nav"), burger = document.getElementById("burger");
+    burger.addEventListener("click", function () {
+      var open = nav.classList.toggle("open");
+      burger.setAttribute("aria-expanded", open);
+      document.body.style.overflow = open ? "hidden" : "";
+    });
+    document.querySelectorAll("#mob a").forEach(function (a) {
+      a.addEventListener("click", function () { nav.classList.remove("open"); document.body.style.overflow = ""; });
+    });
+
+    // Avvisami: l'iscrizione va ai clienti Shopify con tag "pinarello"
+    var form = document.getElementById("avvisami");
+    var note = document.querySelector(".hero .note");
+    form.addEventListener("submit", function (e) {
+      var email = form.querySelector('[type="email"]').value.trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        e.preventDefault();
         note.textContent = "Inserisci un'email valida.";
         return;
       }
-      try {
-        const res = await fetch("/api/notify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
-        if (!res.ok) throw new Error();
+      setTimeout(function () {
         form.reset();
-        note.textContent = "Grazie. Ti scriviamo appena arriva.";
-      } catch {
-        note.textContent = "Qualcosa è andato storto. Riprova.";
-      }
+        note.textContent = "Grazie! Ti scriviamo appena arriva.";
+      }, 50);
     });
   </script>
 </body>
