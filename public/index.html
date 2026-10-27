@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cicli Dal Zilio — Pinarello in arrivo</title>
+  <meta name="description" content="Pinarello arriva da Cicli Dal Zilio. Iscriviti per sapere per primo quando." />
+  <meta name="theme-color" content="#000000" />
+  <style>
+    :root {
+      --bg: #000;
+      --text: #f5f5f7;
+      --muted: #86868b;
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #2997ff;
+      --glow: rgba(200, 16, 46, 0.35);
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Nav */
+    .nav {
+      position: fixed; inset: 0 0 auto 0; z-index: 10; height: 48px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner {
+      max-width: 1024px; height: 100%; margin: 0 auto; padding: 0 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; letter-spacing: -0.01em;
+    }
+    .brand { font-weight: 600; font-size: 14px; letter-spacing: 0.02em; }
+    .nav-links { display: flex; gap: 32px; color: rgba(245, 245, 247, 0.8); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { color: var(--accent); }
+    @media (max-width: 640px) { .nav-links { display: none; } }
+
+    /* Hero */
+    .hero {
+      position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 96px 16px 32px; text-align: center;
+    }
+    .hero::before {
+      content: ""; position: absolute; left: 50%; top: 62%; width: 900px; height: 520px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse at center, var(--glow), transparent 65%);
+      filter: blur(40px); pointer-events: none;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: #c8102e; box-shadow: 0 0 0 0 rgba(200,16,46,.7); animation: pulse 2s infinite; }
+    @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(200,16,46,0); } 100% { box-shadow: 0 0 0 0 rgba(200,16,46,0); } }
+
+    h1 {
+      margin-top: 24px; font-size: clamp(48px, 9vw, 96px); font-weight: 700;
+      line-height: 1.02; letter-spacing: -0.035em;
+    }
+    h1 .soft {
+      display: block;
+      background: linear-gradient(180deg, #f5f5f7 0%, #6e6e73 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead {
+      margin-top: 20px; max-width: 560px; font-size: clamp(19px, 2.4vw, 24px);
+      line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; color: var(--muted);
+    }
+
+    .ctas { width: 100%; margin-top: 32px; display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; align-items: center; }
+    .notify { display: flex; gap: 8px; width: min(420px, 100%); }
+    .notify input {
+      flex: 1; min-width: 0; height: 44px; padding: 0 18px; border-radius: 999px;
+      border: 1px solid var(--line); background: rgba(255,255,255,0.06); color: var(--text);
+      font: inherit; font-size: 15px; outline: none; transition: border-color .2s;
+    }
+    .notify input::placeholder { color: var(--muted); }
+    .notify input:focus { border-color: var(--accent); }
+    .btn {
+      height: 44px; padding: 0 22px; border: 0; border-radius: 999px; cursor: pointer;
+      background: var(--text); color: #000; font: inherit; font-size: 15px; font-weight: 500;
+      transition: transform .15s, opacity .2s;
+    }
+    .btn:hover { opacity: .88; }
+    .btn:active { transform: scale(.97); }
+    .link { color: var(--accent); font-size: 17px; }
+    .link:hover { text-decoration: underline; }
+    .note { margin-top: 14px; min-height: 18px; font-size: 13px; color: var(--muted); }
+
+    /* Bike line art */
+    .bike { position: relative; margin-top: 40px; width: clamp(300px, calc((100svh - 560px) * 2.1), 680px); max-width: 100%; opacity: 0; animation: rise 1.4s .3s cubic-bezier(.2,.7,.2,1) forwards; }
+    .bike svg { width: 100%; height: auto; display: block; }
+    .bike path, .bike circle, .bike line { fill: none; stroke: url(#steel); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .bike .rim { stroke-width: 1.2; opacity: .5; }
+    .floor { position: absolute; left: 10%; right: 10%; bottom: -6px; height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); }
+
+    .reveal { opacity: 0; transform: translateY(16px); animation: rise 1s cubic-bezier(.2,.7,.2,1) forwards; }
+    .d1 { animation-delay: .05s; } .d2 { animation-delay: .15s; } .d3 { animation-delay: .25s; } .d4 { animation-delay: .35s; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+
+    .scroll { margin-top: 40px; font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .bike { animation: none; opacity: 1; transform: none; }
+      .dot { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">Dal Zilio</a>
+      <nav class="nav-links">
+        <a href="#">Bici</a>
+        <a href="#">Officina</a>
+        <a href="#">Bike fitting</a>
+        <a href="#">Contatti</a>
+      </nav>
+      <a class="nav-cta" href="#avvisami">Avvisami</a>
+    </div>
+  </header>
+
+  <main class="hero">
+    <span class="pill reveal d1"><span class="dot"></span>Pre-lancio</span>
+
+    <h1 class="reveal d2">Pinarello.<span class="soft">In arrivo.</span></h1>
+
+    <p class="lead reveal d3">Una nuova pagina sta per iniziare da Cicli Dal Zilio. Il mito delle corse, presto in negozio.</p>
+
+    <div class="ctas reveal d4" id="avvisami">
+      <form class="notify" novalidate>
+        <input type="email" name="email" placeholder="La tua email" autocomplete="email" required aria-label="Email" />
+        <button class="btn" type="submit">Avvisami</button>
+      </form>
+    </div>
+    <p class="note reveal d4" role="status" aria-live="polite">Sii il primo a saperlo. Niente spam.</p>
+
+    <div class="bike" aria-hidden="true">
+      <svg viewBox="0 0 760 360">
+        <defs>
+          <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#f5f5f7" />
+            <stop offset=".55" stop-color="#8e8e93" />
+            <stop offset="1" stop-color="#3a3a3c" />
+          </linearGradient>
+        </defs>
+        <!-- wheels -->
+        <circle cx="170" cy="240" r="110" />
+        <circle class="rim" cx="170" cy="240" r="96" />
+        <circle cx="590" cy="240" r="110" />
+        <circle class="rim" cx="590" cy="240" r="96" />
+        <!-- frame -->
+        <path d="M170 240 L335 245 L285 95 Z" />
+        <path d="M285 95 L520 80 L335 245" />
+        <path d="M520 80 L590 240" />
+        <path d="M512 62 L527 98" />
+        <!-- seatpost + saddle -->
+        <path d="M285 95 L272 52" />
+        <path d="M240 48 Q270 40 302 50" />
+        <!-- cockpit -->
+        <path d="M512 62 L548 58 Q578 58 576 86 Q574 104 556 106" />
+        <!-- crank -->
+        <circle cx="335" cy="245" r="20" />
+        <line x1="335" y1="245" x2="358" y2="282" />
+        <!-- hubs -->
+        <circle cx="170" cy="240" r="4" />
+        <circle cx="590" cy="240" r="4" />
+      </svg>
+      <div class="floor"></div>
+    </div>
+
+    <span class="scroll">Cicli Dal Zilio</span>
+  </main>
+
+  <script>
+    const form = document.querySelector(".notify");
+    const note = document.querySelector(".note");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = form.email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        note.textContent = "Inserisci un'email valida.";
+        return;
+      }
+      try {
+        const res = await fetch("/api/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        if (!res.ok) throw new Error();
+        form.reset();
+        note.textContent = "Grazie. Ti scriviamo appena arriva.";
+      } catch {
+        note.textContent = "Qualcosa è andato storto. Riprova.";
+      }
+    });
+  </script>
+</body>
+</html>
