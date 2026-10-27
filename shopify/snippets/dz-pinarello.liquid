@@ -1,0 +1,80 @@
+{%- comment -%}
+  Apertura home: pre-lancio Pinarello, stile minimal scuro.
+  Il modulo "Avvisami" crea un cliente Shopify con tag "newsletter, pinarello":
+  in Clienti si filtrano per tag "pinarello" per mandare l'annuncio al lancio.
+  Per tornare all'apertura normale basta ripristinare templates/index.liquid
+  del tema pubblicato.
+{%- endcomment -%}
+<style>
+  .dzp{position:relative;overflow:hidden;background:#000;color:#f5f5f7;text-align:center;
+    min-height:max(600px,calc(100vh - 100px));min-height:max(600px,calc(100svh - 100px));
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:72px 16px 48px}
+  .dzp::before{content:"";position:absolute;left:50%;top:66%;width:900px;height:520px;transform:translate(-50%,-50%);
+    background:radial-gradient(ellipse at center,rgba(200,16,46,.35),transparent 65%);filter:blur(40px);pointer-events:none}
+  .dzp > *{position:relative}
+  .dzp-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid rgba(255,255,255,.14);border-radius:999px;
+    font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#86868b}
+  .dzp-dot{width:6px;height:6px;border-radius:50%;background:#c8102e;animation:dzpPulse 2s infinite}
+  @keyframes dzpPulse{0%{box-shadow:0 0 0 0 rgba(200,16,46,.7)}70%{box-shadow:0 0 0 8px rgba(200,16,46,0)}100%{box-shadow:0 0 0 0 rgba(200,16,46,0)}}
+  .dzp h1{margin:22px 0 0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",var(--font-sans),sans-serif;
+    font-size:clamp(48px,9vw,96px);font-weight:700;line-height:1.02;letter-spacing:-.035em;color:#f5f5f7}
+  .dzp h1 span{display:block;background:linear-gradient(180deg,#f5f5f7 0%,#6e6e73 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .dzp-lede{margin:20px auto 0;max-width:580px;font-size:clamp(18px,2.3vw,22px);line-height:1.4;font-weight:500;letter-spacing:-.01em;color:#86868b}
+  .dzp-form{margin:32px auto 0;display:flex;gap:8px;width:min(440px,100%)}
+  .dzp-form input[type=email]{flex:1;min-width:0;height:46px;padding:0 18px;border-radius:999px;border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.06);color:#f5f5f7;font:inherit;font-size:15px;outline:none}
+  .dzp-form input[type=email]::placeholder{color:#86868b}
+  .dzp-form input[type=email]:focus{border-color:#2997ff}
+  .dzp-form button{height:46px;padding:0 22px;border:0;border-radius:999px;cursor:pointer;background:#f5f5f7;color:#000;font:inherit;font-size:15px;font-weight:500;white-space:nowrap}
+  .dzp-form button:hover{opacity:.88}
+  .dzp-note{margin-top:14px;min-height:18px;font-size:13px;color:#86868b}
+  .dzp-ok{margin-top:32px;font-size:17px;font-weight:500;color:#f5f5f7}
+  .dzp-links{margin-top:6px;display:flex;gap:24px;justify-content:center;flex-wrap:wrap;font-size:15px}
+  .dzp-links a{color:#2997ff;text-decoration:none}
+  .dzp-links a:hover{text-decoration:underline}
+  .dzp-bike{margin-top:30px;width:clamp(280px,calc((100svh - 600px) * 2.1),620px);max-width:100%;opacity:0;animation:dzpRise 1.4s .3s cubic-bezier(.2,.7,.2,1) forwards}
+  .dzp-bike svg{width:100%;height:auto;display:block}
+  .dzp-bike path,.dzp-bike circle,.dzp-bike line{fill:none;stroke:url(#dzpSteel);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .dzp-bike .rim{stroke-width:1.2;opacity:.5}
+  .dzp-in{opacity:0;transform:translateY(16px);animation:dzpRise 1s cubic-bezier(.2,.7,.2,1) forwards}
+  .dzp-d2{animation-delay:.15s}.dzp-d3{animation-delay:.25s}.dzp-d4{animation-delay:.35s}
+  @keyframes dzpRise{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.dzp-in,.dzp-bike{animation:none;opacity:1;transform:none}.dzp-dot{animation:none}}
+</style>
+
+<div class="dzp" id="pinarello">
+  <span class="dzp-pill dzp-in"><span class="dzp-dot"></span>Pre-lancio</span>
+  <h1 class="dzp-in dzp-d2">Pinarello.<span>In arrivo.</span></h1>
+  <p class="dzp-lede dzp-in dzp-d3">Il mito delle corse sta per arrivare da Cicli Dal Zilio, a Montebelluna e Quinto di Treviso. Lascia la tua email: sarai tra i primi a vederle e provarle.</p>
+
+  <div class="dzp-in dzp-d4" style="width:100%">
+    {%- form 'customer', id: 'dz-pinarello-form', class: 'dzp-form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter,pinarello">
+      {%- if form.posted_successfully? -%}
+        <p class="dzp-ok" style="width:100%">Grazie! Ti scriviamo appena arriva.</p>
+      {%- else -%}
+        <input type="email" name="contact[email]" placeholder="La tua email" autocomplete="email" required aria-label="La tua email">
+        <button type="submit">Avvisami</button>
+      {%- endif -%}
+    {%- endform -%}
+    <p class="dzp-note">Sii il primo a saperlo. Niente spam.</p>
+    <div class="dzp-links">
+      <a href="/collections/tutte-le-bici">Intanto, scopri il catalogo ›</a>
+      <a href="https://wa.me/393457815102?text={{ 'Ciao Cicli Dal Zilio! Vorrei info su Pinarello.' | url_encode }}" target="_blank" rel="noopener noreferrer">Chiedici su WhatsApp ›</a>
+    </div>
+  </div>
+
+  <div class="dzp-bike" aria-hidden="true">
+    <svg viewBox="0 0 760 360">
+      <defs><linearGradient id="dzpSteel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f5f5f7"/><stop offset=".55" stop-color="#8e8e93"/><stop offset="1" stop-color="#3a3a3c"/></linearGradient></defs>
+      <circle cx="170" cy="240" r="110"/><circle class="rim" cx="170" cy="240" r="96"/>
+      <circle cx="590" cy="240" r="110"/><circle class="rim" cx="590" cy="240" r="96"/>
+      <path d="M170 240 L335 245 L285 95 Z"/><path d="M285 95 L520 80 L335 245"/>
+      <path d="M520 80 L590 240"/><path d="M512 62 L527 98"/>
+      <path d="M285 95 L272 52"/><path d="M240 48 Q270 40 302 50"/>
+      <path d="M512 62 L548 58 Q578 58 576 86 Q574 104 556 106"/>
+      <circle cx="335" cy="245" r="20"/><line x1="335" y1="245" x2="358" y2="282"/>
+      <circle cx="170" cy="240" r="4"/><circle cx="590" cy="240" r="4"/>
+    </svg>
+  </div>
+</div>
