@@ -2,6 +2,9 @@
   Apertura home: pre-lancio Pinarello, stile minimal scuro.
   Il modulo "Avvisami" crea un cliente Shopify con tag "newsletter, pinarello":
   in Clienti si filtrano per tag "pinarello" per mandare l'annuncio al lancio.
+  Foto ufficiali: caricare in Contenuti > File "pinarello-hero.jpg" (sfondo)
+  e, se si vuole, "pinarello-1.jpg", "pinarello-2.jpg", "pinarello-3.jpg".
+  Compaiono da sole; senza foto resta il disegno della bici.
   Per tornare all'apertura normale basta ripristinare templates/index.liquid
   del tema pubblicato.
 {%- endcomment -%}
@@ -40,9 +43,24 @@
   .dzp-d2{animation-delay:.15s}.dzp-d3{animation-delay:.25s}.dzp-d4{animation-delay:.35s}
   @keyframes dzpRise{to{opacity:1;transform:none}}
   @media (prefers-reduced-motion:reduce){.dzp-in,.dzp-bike{animation:none;opacity:1;transform:none}.dzp-dot{animation:none}}
+  /* foto ufficiale: se in Contenuti > File c'e' "pinarello-hero.jpg" diventa lo sfondo e sostituisce il disegno */
+  .dzp-photo{position:absolute !important;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s;z-index:0}
+  .dzp.has-photo .dzp-photo{opacity:1}
+  .dzp.has-photo::before{z-index:1;top:0;left:0;width:100%;height:100%;transform:none;filter:none;
+    background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.25) 45%,rgba(0,0,0,.85) 100%)}
+  .dzp > *:not(.dzp-photo){z-index:2}
+  .dzp.has-photo .dzp-bike{display:none}
+  .dzp.has-photo .dzp-lede{color:rgba(255,255,255,.8)}
+  /* tre foto modello opzionali: pinarello-1.jpg, pinarello-2.jpg, pinarello-3.jpg */
+  .dzp-gamma{display:none;grid-template-columns:repeat(3,1fr);gap:14px;width:min(1080px,100%);margin-top:56px}
+  .dzp-gamma.on{display:grid}
+  .dzp-gamma img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px;background:#141416}
+  @media (max-width:700px){.dzp-gamma{grid-template-columns:1fr}}
 </style>
 
 <div class="dzp" id="pinarello">
+  <img class="dzp-photo" src="{{ 'pinarello-hero.jpg' | file_url }}" alt="" fetchpriority="high"
+       onload="this.closest('.dzp').classList.add('has-photo')" onerror="this.remove()">
   <span class="dzp-pill dzp-in"><span class="dzp-dot"></span>Pre-lancio</span>
   <h1 class="dzp-in dzp-d2">Pinarello.<span>In arrivo.</span></h1>
   <p class="dzp-lede dzp-in dzp-d3">Il mito delle corse sta per arrivare da Cicli Dal Zilio, a Montebelluna e Quinto di Treviso. Lascia la tua email: sarai tra i primi a vederle e provarle.</p>
@@ -62,6 +80,13 @@
       <a href="/collections/tutte-le-bici">Intanto, scopri il catalogo ›</a>
       <a href="https://wa.me/393457815102?text={{ 'Ciao Cicli Dal Zilio! Vorrei info su Pinarello.' | url_encode }}" target="_blank" rel="noopener noreferrer">Chiedici su WhatsApp ›</a>
     </div>
+  </div>
+
+  <div class="dzp-gamma" aria-label="Pinarello in arrivo">
+    {%- for i in (1..3) -%}
+      <img src="{{ 'pinarello-' | append: i | append: '.jpg' | file_url }}" alt="Pinarello"
+           onload="this.parentNode.classList.add('on')" onerror="this.remove()">
+    {%- endfor -%}
   </div>
 
   <div class="dzp-bike" aria-hidden="true">
